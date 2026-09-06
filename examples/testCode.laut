@@ -1,0 +1,30 @@
+interface ISettlement
+{
+    getSettlementName() string
+    setSettlementName(const ref string name) void
+
+    collectTaxes() float
+    getPopulation() int
+}
+
+class Town with ISettlement
+{
+    public
+    {
+        def getSettlementName() string
+        {
+            return "My Town"
+        }   
+
+        def collectTaxes() float
+        {
+            return 1000.0
+        }
+
+        def getPopulation() int
+        {
+            return 5000
+        }
+    }
+}
+

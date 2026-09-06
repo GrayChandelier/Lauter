@@ -1,0 +1,267 @@
+//LauterLang syntax example 
+import 
+{
+    "std/net/http" as http,
+    "std/graphics" as gfx
+}
+
+
+//===FUNCTIONS===//
+
+def summator(int A, int B) int
+{
+    return A + B
+}
+
+def getSomeResponse(string url) string, int
+{
+    http::Client client
+    http::Response response = client.get(url) 
+    return response.body, response.statusCode
+}
+
+
+/*  
+class result //default class in standard library to represent the result of an operation
+{
+    public
+    {
+        int value
+        string message
+    }
+
+    constructor (int value, string message)
+    {
+        self.value = value
+        self.message = message
+    }
+}
+
+def ok() result
+{
+    return result(0, "OK")
+}
+
+def error(string message) result
+{
+    return result(-1, message)
+}
+*/
+
+def divider(int A, int B) int, result
+{
+    if B != 0 return A / B, ok() //NoError is macross defined in the standard library
+
+    return 0, error("Division by zero")
+}
+
+//===CLASSES AND INTERFACES===//
+
+interface AbleToSpeak
+{
+    speak() string
+}
+
+class Person with AbleToSpeak
+{
+    public
+    {
+        string name
+
+        def speak() string
+        {
+            return "Hello, my name is " + name
+        }
+    }
+
+    constructor (string name)
+    {
+        self.name = name
+    }
+
+
+}
+
+class Entity //implicitly defines the Entity interface
+{
+    public
+    {
+        string email
+    }
+
+    protected
+    {
+        //protected members can be accessed by derived classes
+    }
+    
+    private
+    {
+        int id
+    }
+
+    constructor () //default constructor
+    {
+        email = ""
+        id = 0
+    }
+
+    constructor (string email, int id) //constructor with parameters
+    {
+        self.email = email
+        self.id = id
+    }
+
+    destructor //default destructor
+    {
+        print("Entity with id " + id + " is being destroyed")
+    }
+
+}
+
+interface Animal
+{
+    getAnimalType() string
+    getAnimalName() string
+}
+
+class Dog with Animal, AbleToSpeak //implicitly defines the Dog interface
+{
+    public
+    {
+        string name
+        string breed
+        int age
+
+        def speak() string
+        {
+            return "Woof!"
+        }
+    
+        def getAnimalType() string
+        {
+            return "Dog"
+        }
+    }
+
+
+ 
+
+    def move() //method
+    {
+        print(name + " is being moved")
+    }
+
+
+    /*The constructor and destructor are declared implicitly*/
+}
+
+
+
+
+//===OOP IN ACTION===//
+
+Dog Bobby  //creating an instance of the Dog class using the default constructor
+Bobby.speak() //Output: "Woof!"
+
+Animal myPet = Bobby //upcasting to the AbleToSpeak interface, we can only call methods defined in the AbleToSpeak interface on myPet
+Dog puppy = copy(Bobby) //creating a copy of Bobby, puppy is a separate instance of the Dog class
+
+//This function demonstrates working with a copy of the Dog class instance. The copied parameter is passed by value, meaning that any changes made to it will not affect the original instance.
+def workWithCopy(Dog copied) 
+{
+    copied.move() //Output: "{copied.name} is being moved"
+}
+
+//This function demonstrates working with the original instance of the Dog class, which is passed by reference. Any changes made to the moved parameter will affect the original instance.
+def workWithOriginal(ref Dog moved) 
+{
+    moved.move() //Output: "{moved.name} is being moved"
+}
+
+//===CONTAINERS===//
+array(int, 5) numbers = [1, 2, 3, 4, 5] //const length
+vector(string) names = ["Alice", "Bob", "Charlie"] //dynamic length, can be resized using push_back, pop_back, etc.
+list(float) scores = [95.5, 88.0, 76.5] //dynamic length, can be resized using push_back, pop_back, etc.
+map(string, int) ages = [["Alice", 30], ["Bob", 25]] //key-value pairs, keys are unique
+set(string) visitedUrls = ["google.com", "facebook.com"] //unique values, no duplicates allowed
+
+//vector(int) numbers = [1,2,3]   template class object + initialization 
+//foo(params) x = y   function call + statement 
+//func1(params) func2(params) vector(int) nums = [1,2,3,4,5] - function call + function call + template class object + initialization 
+//func1(params) func2(params) nums = [1,2,3,4,5] - function call + function call + assign statement
+
+//===LOOPS===//
+while 5 < 10 //contion (5 < 10) is just example
+{
+    print("While loop")
+}
+
+for x in range(0, 10) //equals to for (int x = 0; x < 10; x++). Iterator 'x' is immutable inside the loop body
+{
+    print("Classic for loop")
+    if x % 2 == 0 continue //skips the current iteration of the loop if x is even
+}
+
+for it in names  //Container iteration, iterator 'it' is immutable
+{
+    print(it + "\n")
+}
+
+
+//===CONDITIONALS===//
+
+int day = 5
+int holiday = 3
+when day //auto breaks after executing the matched case block, no need for explicit break statements
+{
+    holiday => { print("It's a holiday") }
+    1, 2, 3, 4, 5 => { print("It's a weekday") }
+    default => { print("Invalid day") }
+    6, 7 => { print("It's a weekend") }
+   
+}
+
+int x = 1
+when x
+{
+    0 => { print("x is zero") x = 1 } cascade //cascades down to the next case after executing the code block
+    1 => { print("x is one") } 
+
+    default => { print("x is something else") }
+}
+
+//===GENERICS===//
+
+class vector(T) 
+{ 
+    /*realisation*/ 
+    constructor(int size) {}
+}
+
+class map(Key, Value) with IterableObject
+{ /*realisation*/ }
+
+//'T' — template, IterableObject — interface
+class genericContainer(T) with IterableObject
+{
+    public
+    {
+        T value
+
+        def getValue() T
+        {
+            return value
+        }
+
+        def setValue(T newValue)
+        {
+            value = newValue
+        }
+    }
+
+    constructor (T value)
+    {
+        self.value = value
+    }
+
+}

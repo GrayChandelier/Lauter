@@ -1,0 +1,56 @@
+import {
+    "API" as API
+}
+
+def onPlayerSendCommand(API::Player player, string message) 
+{
+    vector(string) command = API::readAsCommand(message) 
+
+    if command[0] == "/tpask" or command[0] == "/tpa" 
+    {
+        string username = command[1]
+
+        API::Player playerByUsername = API::getPlayerByUsername(username)
+        API::sendMessage(playerByUsername, "К вам хочет телепортироваться игрок" + player.getUsername())
+        
+        if command[0] == "/tpaccept" and player.getUsername() == username 
+        {
+            API::Entity::move(player, playerByUsername.getPos())
+        }
+        else if command[1] == "/tpadeny" 
+        {
+            API::sendMessage(player, username + "Отклонил ваш запрос")
+        }
+    }
+}
+
+
+class Container
+{
+    ref MyClass obj //Error
+    box MyClass obj //OK
+
+    constructor(ref MyClass R)
+    {
+        obj = R //ERROR, attempt to keep borrowing
+    }
+
+    constructor(box MyClass R)
+    {
+        obj = R //OK
+    }
+}
+def func(ref MyClass obj) 
+{
+    Container
+}
+
+MyClass A //stack
+ref MyClass a = A //borrowing
+func(A) //OK
+func(a) //OK
+
+box MyClass B //heap
+ref MyClass b = B //OK
+
+
