@@ -41,7 +41,7 @@ namespace Lauter
 		FunctionSignature sig;
 		sig.parameters.reserve(arguments.size());
 
-		//Рекурсивно типизируем каждый аргумент
+		//Р РµРєСѓСЂСЃРёРІРЅРѕ С‚РёРїРёР·РёСЂСѓРµРј РєР°Р¶РґС‹Р№ Р°СЂРіСѓРјРµРЅС‚
 		for (auto& arg : arguments)
 			sig.parameters.push_back(arg->accept(*this));
 
@@ -94,19 +94,19 @@ namespace Lauter
 
 	QualifiedType SemanticAnalyzer::visit(AST::BinaryExpression& node) 
 	{
-		//Получение типов операндов (handle-sides)
+		//РџРѕР»СѓС‡РµРЅРёРµ С‚РёРїРѕРІ РѕРїРµСЂР°РЅРґРѕРІ (handle-sides)
 		QualifiedType lhs = node.leftOperand->accept(*this);
 		QualifiedType rhs = node.rightOperand->accept(*this);
 
-		//Ошибка уже сообщена глубже (например, неизвестный идентификатор) — не дублируем диагностику
+		//РћС€РёР±РєР° СѓР¶Рµ СЃРѕРѕР±С‰РµРЅР° РіР»СѓР±Р¶Рµ (РЅР°РїСЂРёРјРµСЂ, РЅРµРёР·РІРµСЃС‚РЅС‹Р№ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ) вЂ” РЅРµ РґСѓР±Р»РёСЂСѓРµРј РґРёР°РіРЅРѕСЃС‚РёРєСѓ
 		if (!lhs.type || !rhs.type)
 			return QualifiedType{};
 
-		//Разрешение псевдонимов
+		//Р Р°Р·СЂРµС€РµРЅРёРµ РїСЃРµРІРґРѕРЅРёРјРѕРІ
 		const SemanticType* lhsResolved = resolveAlias(lhs.type);
 		const SemanticType* rhsResolved = resolveAlias(rhs.type);
 
-		//Проверка цикла псевдонимов
+		//РџСЂРѕРІРµСЂРєР° С†РёРєР»Р° РїСЃРµРІРґРѕРЅРёРјРѕРІ
 		if (!lhsResolved || !rhsResolved)
 		{
 			error(node, ReportCode::SemanticError, "Alias cycle detected: " + 
@@ -116,13 +116,13 @@ namespace Lauter
 			return QualifiedType{};
 		}
 
-		//Если требуется преобразование
+		//Р•СЃР»Рё С‚СЂРµР±СѓРµС‚СЃСЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ
 		if (lhsResolved != rhsResolved)
 		{
-			//Пробуем привести rhs к типу lhs
+			//РџСЂРѕР±СѓРµРј РїСЂРёРІРµСЃС‚Рё rhs Рє С‚РёРїСѓ lhs
 			auto rhsClass = conversions.classify(rhs, lhs);
 
-			//Допускается неявное преобразование типа правого операнда к типу левого операнда
+			//Р”РѕРїСѓСЃРєР°РµС‚СЃСЏ РЅРµСЏРІРЅРѕРµ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїР° РїСЂР°РІРѕРіРѕ РѕРїРµСЂР°РЅРґР° Рє С‚РёРїСѓ Р»РµРІРѕРіРѕ РѕРїРµСЂР°РЅРґР°
 			if (rhsClass.kind == Conversion::ConversionKind::Implicit)
 			{
 				node.rightOperand = conversions.build(std::move(node.rightOperand), rhsClass, lhs);
@@ -130,10 +130,10 @@ namespace Lauter
 			}
 			else
 			{
-				//Проверка противоположного направления преобразования
+				//РџСЂРѕРІРµСЂРєР° РїСЂРѕС‚РёРІРѕРїРѕР»РѕР¶РЅРѕРіРѕ РЅР°РїСЂР°РІР»РµРЅРёСЏ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ
 				auto lhsClass = conversions.classify(lhs, rhs);
 
-				//Допускается неявное преобразование типа левого операнда к типу правого операнда
+				//Р”РѕРїСѓСЃРєР°РµС‚СЃСЏ РЅРµСЏРІРЅРѕРµ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїР° Р»РµРІРѕРіРѕ РѕРїРµСЂР°РЅРґР° Рє С‚РёРїСѓ РїСЂР°РІРѕРіРѕ РѕРїРµСЂР°РЅРґР°
 				if (lhsClass.kind == Conversion::ConversionKind::Implicit)
 				{
 					node.leftOperand = conversions.build(std::move(node.leftOperand), lhsClass, rhs);
@@ -149,7 +149,7 @@ namespace Lauter
 			}
 		}
 	
-		/*Поиск перегруженного оператора*/
+		/*РџРѕРёСЃРє РїРµСЂРµРіСЂСѓР¶РµРЅРЅРѕРіРѕ РѕРїРµСЂР°С‚РѕСЂР°*/
 		
 		QualifiedName opName{ lhs.type->fullname.{ binaryOperatorFunctionName(node.op) } };
 	}

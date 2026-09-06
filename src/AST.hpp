@@ -7,7 +7,7 @@
 
 #include "Details.hpp"
 
-//Листовые узлы, представляющие выражение
+//Р›РёСЃС‚РѕРІС‹Рµ СѓР·Р»С‹, РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‰РёРµ РІС‹СЂР°Р¶РµРЅРёРµ
 #define LAUTER_AST_EXPR_NODES(X) \
     X(Literal) \
     X(BinaryExpression) \
@@ -20,7 +20,7 @@
 	X(InterfaceCastExpression) \
     X(ErrorExpression)
 
-//Листовые узлы, представляющие инструкцию
+//Р›РёСЃС‚РѕРІС‹Рµ СѓР·Р»С‹, РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‰РёРµ РёРЅСЃС‚СЂСѓРєС†РёСЋ
 #define LAUTER_AST_STMT_NODES(X) \
     X(Block) \
     X(AmbiguousChain) \
@@ -46,15 +46,15 @@
 
 
 
-//Макросы для Expression::accept и Statement::accept
+//РњР°РєСЂРѕСЃС‹ РґР»СЏ Expression::accept Рё Statement::accept
 #define LAUTER_ACCEPT_EXPR_DECL QualifiedType accept(ExpressionVisitor& visitor) override;
 #define LAUTER_ACCEPT_STMT_DECL void accept(StatementVisitor& visitor) override;
 
-//Вспомогательные структуры
+//Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ СЃС‚СЂСѓРєС‚СѓСЂС‹
 namespace Lauter::AST
 {
 
-	//Макрос для листовых узлов AST
+	//РњР°РєСЂРѕСЃ РґР»СЏ Р»РёСЃС‚РѕРІС‹С… СѓР·Р»РѕРІ AST
 #define X(name) class name;
 	LAUTER_AST_EXPR_NODES(X)
 	LAUTER_AST_STMT_NODES(X)
@@ -83,7 +83,7 @@ namespace Lauter::AST
 	class ExpressionVisitor;
 	class StatementVisitor;
 
-	//Абстрактный узел синтаксического дерева
+	//РђР±СЃС‚СЂР°РєС‚РЅС‹Р№ СѓР·РµР» СЃРёРЅС‚Р°РєСЃРёС‡РµСЃРєРѕРіРѕ РґРµСЂРµРІР°
 	class ASTNode
 	{
 	protected:
@@ -103,7 +103,7 @@ namespace Lauter::AST
 		virtual ~ASTNode() = default;
 	};
 
-	//Выражение
+	//Р’С‹СЂР°Р¶РµРЅРёРµ
 	class Expression : public ASTNode
 	{
 	protected:
@@ -112,20 +112,20 @@ namespace Lauter::AST
 		virtual QualifiedType accept(ExpressionVisitor& visitor) = 0;
 	};
 
-	//Литералы
+	//Р›РёС‚РµСЂР°Р»С‹
 	class Literal : public Expression
 	{
 	public:
-		//значение литерала
+		//Р·РЅР°С‡РµРЅРёРµ Р»РёС‚РµСЂР°Р»Р°
 		LiteralValue value;
 
-		//kind необходим для представления типов, которые не зависят от C++ (int8, int16, int32, int64 и т.п.)
+		//kind РЅРµРѕР±С…РѕРґРёРј РґР»СЏ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ С‚РёРїРѕРІ, РєРѕС‚РѕСЂС‹Рµ РЅРµ Р·Р°РІРёСЃСЏС‚ РѕС‚ C++ (int8, int16, int32, int64 Рё С‚.Рї.)
 		LiteralType kind;
 
 		LAUTER_ACCEPT_EXPR_DECL;
 	};
 
-	//Бинарное выражение
+	//Р‘РёРЅР°СЂРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ
 	class BinaryExpression : public Expression
 	{
 	public:
@@ -136,7 +136,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_EXPR_DECL;
 	};
 
-	//Унарное выражение
+	//РЈРЅР°СЂРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ
 	class UnaryExpression : public Expression
 	{
 	public:
@@ -146,7 +146,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_EXPR_DECL;
 	};
 
-	//Постфиксные выражения (доступ к полям, оператор индекса, вызов функции/метода)
+	//РџРѕСЃС‚С„РёРєСЃРЅС‹Рµ РІС‹СЂР°Р¶РµРЅРёСЏ (РґРѕСЃС‚СѓРї Рє РїРѕР»СЏРј, РѕРїРµСЂР°С‚РѕСЂ РёРЅРґРµРєСЃР°, РІС‹Р·РѕРІ С„СѓРЅРєС†РёРё/РјРµС‚РѕРґР°)
 	class PostfixExpression : public Expression
 	{
 	public:
@@ -162,7 +162,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_EXPR_DECL;
 	};
 
-	//Объект, константа или переменная
+	//РћР±СЉРµРєС‚, РєРѕРЅСЃС‚Р°РЅС‚Р° РёР»Рё РїРµСЂРµРјРµРЅРЅР°СЏ
 	class IdentifierExpression : public Expression
 	{
 	public:
@@ -176,7 +176,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_EXPR_DECL;
 	};
 
-	//Кортеж
+	//РљРѕСЂС‚РµР¶
 	class ContainerLiteralExpression : public Expression
 	{
 	public:
@@ -185,7 +185,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_EXPR_DECL;
 	};
 
-	//Присвоение значения
+	//РџСЂРёСЃРІРѕРµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ
 	class AssignmentExpression : public Expression
 	{
 	public:
@@ -196,7 +196,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_EXPR_DECL;
 	};
 
-	//Инструкции
+	//РРЅСЃС‚СЂСѓРєС†РёРё
 	class Statement : public ASTNode
 	{
 	protected:
@@ -206,7 +206,7 @@ namespace Lauter::AST
 	};
 	using StatementPtr = std::unique_ptr<Statement>;
 
-	//Объявление
+	//РћР±СЉСЏРІР»РµРЅРёРµ
 	class Declaration : public Statement
 	{
 	protected:
@@ -214,7 +214,7 @@ namespace Lauter::AST
 	};
 	using DeclarationPtr = std::unique_ptr<Declaration>;
 
-	//Тело условной конструкции, цикла или функции {}
+	//РўРµР»Рѕ СѓСЃР»РѕРІРЅРѕР№ РєРѕРЅСЃС‚СЂСѓРєС†РёРё, С†РёРєР»Р° РёР»Рё С„СѓРЅРєС†РёРё {}
 	class Block : public Statement
 	{
 	public:
@@ -223,13 +223,13 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Тело условной конструкции или цикла
+	//РўРµР»Рѕ СѓСЃР»РѕРІРЅРѕР№ РєРѕРЅСЃС‚СЂСѓРєС†РёРё РёР»Рё С†РёРєР»Р°
 	using Body = StatementPtr;
 
-	//Структура для разрешения неоднозначных конструкций с помощью таблицы символов
-	/* Примеры неоднозначных конструкций:
-	*     array(int, 3) myArray = [1,2,3] — объявление объекта myArray шаблонного типа array с присвоением заданных значений
-	*     func(10) myVar = 5 — вызов функции func и присвоение значения 5 переменной myVar
+	//РЎС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ СЂР°Р·СЂРµС€РµРЅРёСЏ РЅРµРѕРґРЅРѕР·РЅР°С‡РЅС‹С… РєРѕРЅСЃС‚СЂСѓРєС†РёР№ СЃ РїРѕРјРѕС‰СЊСЋ С‚Р°Р±Р»РёС†С‹ СЃРёРјРІРѕР»РѕРІ
+	/* РџСЂРёРјРµСЂС‹ РЅРµРѕРґРЅРѕР·РЅР°С‡РЅС‹С… РєРѕРЅСЃС‚СЂСѓРєС†РёР№:
+	*     array(int, 3) myArray = [1,2,3] вЂ” РѕР±СЉСЏРІР»РµРЅРёРµ РѕР±СЉРµРєС‚Р° myArray С€Р°Р±Р»РѕРЅРЅРѕРіРѕ С‚РёРїР° array СЃ РїСЂРёСЃРІРѕРµРЅРёРµРј Р·Р°РґР°РЅРЅС‹С… Р·РЅР°С‡РµРЅРёР№
+	*     func(10) myVar = 5 вЂ” РІС‹Р·РѕРІ С„СѓРЅРєС†РёРё func Рё РїСЂРёСЃРІРѕРµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ 5 РїРµСЂРµРјРµРЅРЅРѕР№ myVar
 	*/
 	class AmbiguousChain : public Statement
 	{
@@ -254,7 +254,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Инструкция-выражение
+	//РРЅСЃС‚СЂСѓРєС†РёСЏ-РІС‹СЂР°Р¶РµРЅРёРµ
 	class ExpressionStatement : public Statement
 	{
 	public:
@@ -263,7 +263,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Условная конструкция
+	//РЈСЃР»РѕРІРЅР°СЏ РєРѕРЅСЃС‚СЂСѓРєС†РёСЏ
 	class IfStatement : public Statement
 	{
 	public:
@@ -274,7 +274,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Цикл While
+	//Р¦РёРєР» While
 	class WhileStatement : public Statement
 	{
 	public:
@@ -284,7 +284,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Цикл for-in
+	//Р¦РёРєР» for-in
 	class ForInStatement : public Statement
 	{
 	public:
@@ -296,20 +296,20 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Пропуск шага цикла через continue
+	//РџСЂРѕРїСѓСЃРє С€Р°РіР° С†РёРєР»Р° С‡РµСЂРµР· continue
 	class ContinueStatement : public Statement
 	{
 	public:
 		LAUTER_ACCEPT_STMT_DECL;
 	};
-	//Завершение цикла через break
+	//Р—Р°РІРµСЂС€РµРЅРёРµ С†РёРєР»Р° С‡РµСЂРµР· break
 	class BreakStatement : public Statement
 	{
 	public:
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Возвращение значений из функции/метода
+	//Р’РѕР·РІСЂР°С‰РµРЅРёРµ Р·РЅР°С‡РµРЅРёР№ РёР· С„СѓРЅРєС†РёРё/РјРµС‚РѕРґР°
 	class ReturnStatement : public Statement
 	{
 	public:
@@ -318,19 +318,19 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Дочерние узлы конструкции When
+	//Р”РѕС‡РµСЂРЅРёРµ СѓР·Р»С‹ РєРѕРЅСЃС‚СЂСѓРєС†РёРё When
 	class WhenCase : public ASTNode
 	{
 	public:
 		std::vector<ExpressionPtr> conditions;
 		Body body;
 
-		//Пропуск автоматического break
+		//РџСЂРѕРїСѓСЃРє Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРіРѕ break
 		bool fallthrough = false;
 	};
 	using WhenCasePtr = std::unique_ptr<WhenCase>;
 
-	//Условная конструкция When
+	//РЈСЃР»РѕРІРЅР°СЏ РєРѕРЅСЃС‚СЂСѓРєС†РёСЏ When
 	class WhenStatement : public Statement
 	{
 	public:
@@ -342,7 +342,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Объявление объекта, константы или переменной
+	//РћР±СЉСЏРІР»РµРЅРёРµ РѕР±СЉРµРєС‚Р°, РєРѕРЅСЃС‚Р°РЅС‚С‹ РёР»Рё РїРµСЂРµРјРµРЅРЅРѕР№
 	class DeclarationStatement : public Declaration
 	{
 	public:
@@ -366,7 +366,7 @@ namespace Lauter::AST
 		}
 	};
 
-	//Объявление пространства имён
+	//РћР±СЉСЏРІР»РµРЅРёРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° РёРјС‘РЅ
 	class NamespaceDeclaration : public Declaration
 	{
 	public:
@@ -377,39 +377,39 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Объявление функции
+	//РћР±СЉСЏРІР»РµРЅРёРµ С„СѓРЅРєС†РёРё
 	class FuncDeclaration : public Declaration
 	{
 	public:
-		//Имя функции
+		//РРјСЏ С„СѓРЅРєС†РёРё
 		std::string name;
 
-		//Список параметров
+		//РЎРїРёСЃРѕРє РїР°СЂР°РјРµС‚СЂРѕРІ
 		std::vector<Parameter> params;
 
-		//Список возвращаемых типов
+		//РЎРїРёСЃРѕРє РІРѕР·РІСЂР°С‰Р°РµРјС‹С… С‚РёРїРѕРІ
 		std::vector<TypeRef> returns;
 
-		//Тело функции
+		//РўРµР»Рѕ С„СѓРЅРєС†РёРё
 		Body body;
 
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Конструктор класса
+	//РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР°
 	class ConstructorDeclaration : public Declaration
 	{
 	public:
-		//Список параметров
+		//РЎРїРёСЃРѕРє РїР°СЂР°РјРµС‚СЂРѕРІ
 		std::vector<Parameter> params;
 
-		//Тело конструктора
+		//РўРµР»Рѕ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР°
 		Body body;
 
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Деструктор класса
+	//Р”РµСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР°
 	class DestructorDeclaration : public Declaration
 	{
 	public:
@@ -421,28 +421,28 @@ namespace Lauter::AST
 	class ClassDeclaration : public Declaration
 	{
 	public:
-		//Поле класса
+		//РџРѕР»Рµ РєР»Р°СЃСЃР°
 		struct Member
 		{
 			DeclarationPtr member;
 
-			//Уровень доступа
+			//РЈСЂРѕРІРµРЅСЊ РґРѕСЃС‚СѓРїР°
 			AccessModifier access;
 		};
 
-		//Имя класса
+		//РРјСЏ РєР»Р°СЃСЃР°
 		std::string name;
 
-		//Необходимые интерфейсы
+		//РќРµРѕР±С…РѕРґРёРјС‹Рµ РёРЅС‚РµСЂС„РµР№СЃС‹
 		std::vector<QualifiedName> interfaces;
 
-		//Шаблонные параметры
+		//РЁР°Р±Р»РѕРЅРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
 		std::vector<GenericArgument> typeParams;
 
-		//Поля класса
+		//РџРѕР»СЏ РєР»Р°СЃСЃР°
 		std::vector<Member> members;
 
-		//Деструктор
+		//Р”РµСЃС‚СЂСѓРєС‚РѕСЂ
 		std::unique_ptr<DestructorDeclaration> destructor;
 
 		LAUTER_ACCEPT_STMT_DECL;
@@ -451,23 +451,23 @@ namespace Lauter::AST
 	class InterfaceItem : public ASTNode
 	{
 	public:
-		//Имя метода
+		//РРјСЏ РјРµС‚РѕРґР°
 		std::string name;
 
-		//Список параметров
+		//РЎРїРёСЃРѕРє РїР°СЂР°РјРµС‚СЂРѕРІ
 		std::vector<Parameter> params;
 
-		//Список возвращаемых типов
+		//РЎРїРёСЃРѕРє РІРѕР·РІСЂР°С‰Р°РµРјС‹С… С‚РёРїРѕРІ
 		std::vector<TypeRef> returns;
 	};
 
 	class InterfaceDeclaration : public Declaration
 	{
 	public:
-		//Имя интерфейса
+		//РРјСЏ РёРЅС‚РµСЂС„РµР№СЃР°
 		std::string name;
 
-		//Методы интерфейса
+		//РњРµС‚РѕРґС‹ РёРЅС‚РµСЂС„РµР№СЃР°
 		std::vector<InterfaceItem> methods;
 
 		LAUTER_ACCEPT_STMT_DECL;
@@ -478,7 +478,7 @@ namespace Lauter::AST
 	public:
 		std::string sourcePath;
 
-		//Псевдоним для namespace-оболочки, в которую импортируются символы (если пустой, импорт происходит в global namespace)
+		//РџСЃРµРІРґРѕРЅРёРј РґР»СЏ namespace-РѕР±РѕР»РѕС‡РєРё, РІ РєРѕС‚РѕСЂСѓСЋ РёРјРїРѕСЂС‚РёСЂСѓСЋС‚СЃСЏ СЃРёРјРІРѕР»С‹ (РµСЃР»Рё РїСѓСЃС‚РѕР№, РёРјРїРѕСЂС‚ РїСЂРѕРёСЃС…РѕРґРёС‚ РІ global namespace)
 		std::string alias;
 
 
@@ -496,7 +496,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Lifecycle-блоки (at init, at panic, at start, at exit)
+	//Lifecycle-Р±Р»РѕРєРё (at init, at panic, at start, at exit)
 	class RuntimeHookDeclaration : public Declaration
 	{
 	public:
@@ -506,7 +506,7 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_STMT_DECL;
 	};
 
-	//Корень AST
+	//РљРѕСЂРµРЅСЊ AST
 	class TranslationUnit : public ASTNode
 	{
 	public:
@@ -514,7 +514,7 @@ namespace Lauter::AST
 	};
 
 
-	//Заглушки для движка диагностики:
+	//Р—Р°РіР»СѓС€РєРё РґР»СЏ РґРІРёР¶РєР° РґРёР°РіРЅРѕСЃС‚РёРєРё:
 
 	class ErrorExpression : public Expression
 	{
@@ -539,7 +539,7 @@ namespace Lauter::AST
 	};
 
 
-	//Специальный узел преобразования типов, вставляемый в AST семантическим анализатором
+	//РЎРїРµС†РёР°Р»СЊРЅС‹Р№ СѓР·РµР» РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ С‚РёРїРѕРІ, РІСЃС‚Р°РІР»СЏРµРјС‹Р№ РІ AST СЃРµРјР°РЅС‚РёС‡РµСЃРєРёРј Р°РЅР°Р»РёР·Р°С‚РѕСЂРѕРј
 	class ConversionExpression : public Expression
 	{
 	private:
@@ -568,8 +568,8 @@ namespace Lauter::AST
 		LAUTER_ACCEPT_EXPR_DECL;
 	};
 
-	//Специальный узел преобразования типов, вставляемый в AST семантическим анализатором
-	//Приведение объекта к типу реализуемого им интерфейса (upcast, без изменения представления)
+	//РЎРїРµС†РёР°Р»СЊРЅС‹Р№ СѓР·РµР» РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ С‚РёРїРѕРІ, РІСЃС‚Р°РІР»СЏРµРјС‹Р№ РІ AST СЃРµРјР°РЅС‚РёС‡РµСЃРєРёРј Р°РЅР°Р»РёР·Р°С‚РѕСЂРѕРј
+	//РџСЂРёРІРµРґРµРЅРёРµ РѕР±СЉРµРєС‚Р° Рє С‚РёРїСѓ СЂРµР°Р»РёР·СѓРµРјРѕРіРѕ РёРј РёРЅС‚РµСЂС„РµР№СЃР° (upcast, Р±РµР· РёР·РјРµРЅРµРЅРёСЏ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ)
 	class InterfaceCastExpression : public Expression
 	{
 	private:

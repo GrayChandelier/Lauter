@@ -1,4 +1,4 @@
-﻿#include <fstream> //read lauter sorce files
+#include <fstream> //read lauter sorce files
 #include <filesystem>
 
 #include "Lexer.hpp" //lauter lexer

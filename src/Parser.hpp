@@ -28,8 +28,8 @@ namespace Lauter
 		Token get() noexcept override;
 	};
 
-	//Локальное исключение control-flow парсера. Не пересекает границу Parser —
-	//ловится в safe-обёртках, которые вызывают synchronize().
+	//Р›РѕРєР°Р»СЊРЅРѕРµ РёСЃРєР»СЋС‡РµРЅРёРµ control-flow РїР°СЂСЃРµСЂР°. РќРµ РїРµСЂРµСЃРµРєР°РµС‚ РіСЂР°РЅРёС†Сѓ Parser вЂ”
+	//Р»РѕРІРёС‚СЃСЏ РІ safe-РѕР±С‘СЂС‚РєР°С…, РєРѕС‚РѕСЂС‹Рµ РІС‹Р·С‹РІР°СЋС‚ synchronize().
 	struct ParseError : std::exception
 	{
 		SourceLocation location;
@@ -56,10 +56,10 @@ namespace Lauter
 		ITokenStream& stream;
 		DiagnosticEngine& diagnostics;
 
-		//Глубина вложенных циклов для предотвращения вызова break или continue вне while или for
+		//Р“Р»СѓР±РёРЅР° РІР»РѕР¶РµРЅРЅС‹С… С†РёРєР»РѕРІ РґР»СЏ РїСЂРµРґРѕС‚РІСЂР°С‰РµРЅРёСЏ РІС‹Р·РѕРІР° break РёР»Рё continue РІРЅРµ while РёР»Рё for
 		int loopDepth = 0;
 
-		//RAII обёртка для оператора инкремента/декремента глубины цикла
+		//RAII РѕР±С‘СЂС‚РєР° РґР»СЏ РѕРїРµСЂР°С‚РѕСЂР° РёРЅРєСЂРµРјРµРЅС‚Р°/РґРµРєСЂРµРјРµРЅС‚Р° РіР»СѓР±РёРЅС‹ С†РёРєР»Р°
 		struct LoopGuard
 		{
 			int& _loopDepth;
@@ -87,24 +87,24 @@ namespace Lauter
 		ReportLocation getReportLocation(const Token& token) const;
 
 
-		//Прокручивает поток до ближайшей точки синхронизации (';', '}', ключевое
-		//слово начала statement/declaration), не выходя за границу текущего блока
+		//РџСЂРѕРєСЂСѓС‡РёРІР°РµС‚ РїРѕС‚РѕРє РґРѕ Р±Р»РёР¶Р°Р№С€РµР№ С‚РѕС‡РєРё СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё (';', '}', РєР»СЋС‡РµРІРѕРµ
+		//СЃР»РѕРІРѕ РЅР°С‡Р°Р»Р° statement/declaration), РЅРµ РІС‹С…РѕРґСЏ Р·Р° РіСЂР°РЅРёС†Сѓ С‚РµРєСѓС‰РµРіРѕ Р±Р»РѕРєР°
 		void synchronize();
 		void synchronizeTopLevel();
 
-		//Метод, проверяющий начало инструкции. Необходим для работы метода synchronize()
+		//РњРµС‚РѕРґ, РїСЂРѕРІРµСЂСЏСЋС‰РёР№ РЅР°С‡Р°Р»Рѕ РёРЅСЃС‚СЂСѓРєС†РёРё. РќРµРѕР±С…РѕРґРёРј РґР»СЏ СЂР°Р±РѕС‚С‹ РјРµС‚РѕРґР° synchronize()
 		bool isStatementStart() const;
-		//Метод, проверяющий начало объявления. Необходим для работы метода synchronizeTopLevel()
+		//РњРµС‚РѕРґ, РїСЂРѕРІРµСЂСЏСЋС‰РёР№ РЅР°С‡Р°Р»Рѕ РѕР±СЉСЏРІР»РµРЅРёСЏ. РќРµРѕР±С…РѕРґРёРј РґР»СЏ СЂР°Р±РѕС‚С‹ РјРµС‚РѕРґР° synchronizeTopLevel()
 		bool isTopLevelStart() const;
 
-		//Фабрики error-узлов — общая точка, куда попадает SourceLocation последней
-		//валидной позиции перед сбоем
+		//Р¤Р°Р±СЂРёРєРё error-СѓР·Р»РѕРІ вЂ” РѕР±С‰Р°СЏ С‚РѕС‡РєР°, РєСѓРґР° РїРѕРїР°РґР°РµС‚ SourceLocation РїРѕСЃР»РµРґРЅРµР№
+		//РІР°Р»РёРґРЅРѕР№ РїРѕР·РёС†РёРё РїРµСЂРµРґ СЃР±РѕРµРј
 		AST::ExpressionPtr makeErrorExpression(SourceLocation location) const;
 		AST::StatementPtr makeErrorStatement(SourceLocation location) const;
 		AST::DeclarationPtr makeErrorDeclaration(SourceLocation location) const;
 
-		//Safe-обёртки: ловят ParseError, вызывают synchronize(), возвращают
-		//соответствующую Error-ноду вместо nullptr/исключения наружу
+		//Safe-РѕР±С‘СЂС‚РєРё: Р»РѕРІСЏС‚ ParseError, РІС‹Р·С‹РІР°СЋС‚ synchronize(), РІРѕР·РІСЂР°С‰Р°СЋС‚
+		//СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ Error-РЅРѕРґСѓ РІРјРµСЃС‚Рѕ nullptr/РёСЃРєР»СЋС‡РµРЅРёСЏ РЅР°СЂСѓР¶Сѓ
 		AST::StatementPtr parseStatementSafely();
 		AST::DeclarationPtr parseTopLevelDeclarationSafely();
 
@@ -135,7 +135,7 @@ namespace Lauter
 		std::vector<AST::Parameter> parseParameterList();
 		std::vector<TypeRef> parseReturnTypeList();
 
-		//=== Expressions (по убыванию приоритета связывания снизу вверх) ===
+		//=== Expressions (РїРѕ СѓР±С‹РІР°РЅРёСЋ РїСЂРёРѕСЂРёС‚РµС‚Р° СЃРІСЏР·С‹РІР°РЅРёСЏ СЃРЅРёР·Сѓ РІРІРµСЂС…) ===
 
 		AST::ExpressionPtr parseExpression();
 		AST::ExpressionPtr parseAssignment();
@@ -154,18 +154,18 @@ namespace Lauter
 
 		//=== Ambiguity resolution ===
 
-		//true, если впереди последовательность, которую нельзя разобрать как
-		//чистое выражение/чистое объявление без символьной таблицы —
-		//откладывается в AmbiguousStatement
+		//true, РµСЃР»Рё РІРїРµСЂРµРґРё РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ, РєРѕС‚РѕСЂСѓСЋ РЅРµР»СЊР·СЏ СЂР°Р·РѕР±СЂР°С‚СЊ РєР°Рє
+		//С‡РёСЃС‚РѕРµ РІС‹СЂР°Р¶РµРЅРёРµ/С‡РёСЃС‚РѕРµ РѕР±СЉСЏРІР»РµРЅРёРµ Р±РµР· СЃРёРјРІРѕР»СЊРЅРѕР№ С‚Р°Р±Р»РёС†С‹ вЂ”
+		//РѕС‚РєР»Р°РґС‹РІР°РµС‚СЃСЏ РІ AmbiguousStatement
 		bool isAmbiguousConstruct() const;
-		//Разбор неоднозначных конструкций вида A(x) B(y), которые нельзя разобрать без знания таблицы символов
+		//Р Р°Р·Р±РѕСЂ РЅРµРѕРґРЅРѕР·РЅР°С‡РЅС‹С… РєРѕРЅСЃС‚СЂСѓРєС†РёР№ РІРёРґР° A(x) B(y), РєРѕС‚РѕСЂС‹Рµ РЅРµР»СЊР·СЏ СЂР°Р·РѕР±СЂР°С‚СЊ Р±РµР· Р·РЅР°РЅРёСЏ С‚Р°Р±Р»РёС†С‹ СЃРёРјРІРѕР»РѕРІ
 		AST::StatementPtr parseAmbiguousStatement();
 
 		//=== Statements ===
 
 		
-		AST::StatementPtr parseBlock(); //считывает фигурные скобки и список инструкций внутри них
-		AST::Body parseBody(); //один statement или Block, в зависимости от синтаксиса
+		AST::StatementPtr parseBlock(); //СЃС‡РёС‚С‹РІР°РµС‚ С„РёРіСѓСЂРЅС‹Рµ СЃРєРѕР±РєРё Рё СЃРїРёСЃРѕРє РёРЅСЃС‚СЂСѓРєС†РёР№ РІРЅСѓС‚СЂРё РЅРёС…
+		AST::Body parseBody(); //РѕРґРёРЅ statement РёР»Рё Block, РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЃРёРЅС‚Р°РєСЃРёСЃР°
 		AST::StatementPtr parseStatement();
 
 		AST::StatementPtr parseExpressionStatement();
@@ -182,10 +182,10 @@ namespace Lauter
 
 		//=== Top-level declarations ===
 
-		//Объявление сущностей высшего порядка (классы, интерфейсы, пространства имён и т.п.)
+		//РћР±СЉСЏРІР»РµРЅРёРµ СЃСѓС‰РЅРѕСЃС‚РµР№ РІС‹СЃС€РµРіРѕ РїРѕСЂСЏРґРєР° (РєР»Р°СЃСЃС‹, РёРЅС‚РµСЂС„РµР№СЃС‹, РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° РёРјС‘РЅ Рё С‚.Рї.)
 		bool isTopLevelDeclaration() const;
 		AST::DeclarationPtr parseTopLevelDeclaration();
-		AST::StatementPtr parseTopLevelItem(); //StatementPtr или DeclarationPtr
+		AST::StatementPtr parseTopLevelItem(); //StatementPtr РёР»Рё DeclarationPtr
 
 		std::unique_ptr<AST::FuncDeclaration> parseFuncDeclaration();
 		std::unique_ptr<AST::ConstructorDeclaration> parseConstructorDeclaration();

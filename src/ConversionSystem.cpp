@@ -2,29 +2,29 @@
 
 namespace Lauter::Conversion
 {
-	//Проверяет доступность изменения квалификаторов
+	//РџСЂРѕРІРµСЂСЏРµС‚ РґРѕСЃС‚СѓРїРЅРѕСЃС‚СЊ РёР·РјРµРЅРµРЅРёСЏ РєРІР°Р»РёС„РёРєР°С‚РѕСЂРѕРІ
 	bool ConversionSystem::checkModifiers(const QualifiedType& from, const QualifiedType& to) const
 	{
-		// ref нельзя неявно превратить в значение (потеря идентичности объекта).
-		// Значение можно неявно заимствовать как ref (implicit borrow).
+		// ref РЅРµР»СЊР·СЏ РЅРµСЏРІРЅРѕ РїСЂРµРІСЂР°С‚РёС‚СЊ РІ Р·РЅР°С‡РµРЅРёРµ (РїРѕС‚РµСЂСЏ РёРґРµРЅС‚РёС‡РЅРѕСЃС‚Рё РѕР±СЉРµРєС‚Р°).
+		// Р—РЅР°С‡РµРЅРёРµ РјРѕР¶РЅРѕ РЅРµСЏРІРЅРѕ Р·Р°РёРјСЃС‚РІРѕРІР°С‚СЊ РєР°Рє ref (implicit borrow).
 		if (from.isReference && !to.isReference)
 			return false;
 
-		// const нельзя неявно снять — но можно добавить (mut -> const безопасно).
+		// const РЅРµР»СЊР·СЏ РЅРµСЏРІРЅРѕ СЃРЅСЏС‚СЊ вЂ” РЅРѕ РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ (mut -> const Р±РµР·РѕРїР°СЃРЅРѕ).
 		if (from.isConst && !to.isConst)
 			return false;
 
 		return true;
 	}
 
-	//Проверяет, реализует ли objType интерфейс ifaceType
+	//РџСЂРѕРІРµСЂСЏРµС‚, СЂРµР°Р»РёР·СѓРµС‚ Р»Рё objType РёРЅС‚РµСЂС„РµР№СЃ ifaceType
 	bool ConversionSystem::implementsInterface(const SemanticType* objType, const SemanticType* ifaceType) const
 	{
 		if (ifaceType->kind != TypeKind::Interface)
 			return false;
 
 		if (objType->kind == TypeKind::Interface)
-			return objType == ifaceType; // нет наследования интерфейсов — только точное совпадение указателя
+			return objType == ifaceType; // РЅРµС‚ РЅР°СЃР»РµРґРѕРІР°РЅРёСЏ РёРЅС‚РµСЂС„РµР№СЃРѕРІ вЂ” С‚РѕР»СЊРєРѕ С‚РѕС‡РЅРѕРµ СЃРѕРІРїР°РґРµРЅРёРµ СѓРєР°Р·Р°С‚РµР»СЏ
 
 		if (objType->kind != TypeKind::Class)
 			return false;
@@ -43,7 +43,7 @@ namespace Lauter::Conversion
 		const SemanticType* toResolved = resolveAlias(to.type);
 
 		if (!fromResolved || !toResolved)
-			return { ConversionKind::Invalid, ConversionOperation::None }; // цикл псевдонимов
+			return { ConversionKind::Invalid, ConversionOperation::None }; // С†РёРєР» РїСЃРµРІРґРѕРЅРёРјРѕРІ
 
 		if (!checkModifiers(from, to))
 			return { ConversionKind::Invalid, ConversionOperation::None };
@@ -55,7 +55,7 @@ namespace Lauter::Conversion
 		{
 
 
-			//Преобразование в bool
+			//РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РІ bool
 			if (toResolved == primitives.boolType )
 			{
 				if(numericRankOf(fromResolved) == -1)
@@ -64,7 +64,7 @@ namespace Lauter::Conversion
 				return { ConversionKind::Implicit, ConversionOperation::NumericCast };
 			}
 
-			//Преобразование из bool не допускается
+			//РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РёР· bool РЅРµ РґРѕРїСѓСЃРєР°РµС‚СЃСЏ
 			if (fromResolved == primitives.boolType)
 				return { ConversionKind::Invalid, ConversionOperation::None };
 

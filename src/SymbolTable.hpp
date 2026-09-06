@@ -46,7 +46,7 @@ namespace Lauter
 
 
 
-	//Переменная или объект
+	//РџРµСЂРµРјРµРЅРЅР°СЏ РёР»Рё РѕР±СЉРµРєС‚
 	class VariableSymbol : public Symbol
 	{
 	private:
@@ -72,7 +72,7 @@ namespace Lauter
 		}
 	};
 
-	//Пользовательский тип или шаблонный параметр
+	//РџРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ С‚РёРї РёР»Рё С€Р°Р±Р»РѕРЅРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ
 	class TypeSymbol : public Symbol
 	{
 	private:
@@ -97,7 +97,7 @@ namespace Lauter
 		{
 			Declared,
 			Defined,
-			Extern //внешняя функция, не требует блока с реализацией
+			Extern //РІРЅРµС€РЅСЏСЏ С„СѓРЅРєС†РёСЏ, РЅРµ С‚СЂРµР±СѓРµС‚ Р±Р»РѕРєР° СЃ СЂРµР°Р»РёР·Р°С†РёРµР№
 		};
 
 		explicit FunctionOverload(FunctionType* type)
@@ -179,7 +179,7 @@ namespace Lauter
 	};
 
 
-	//Область видимости {}
+	//РћР±Р»Р°СЃС‚СЊ РІРёРґРёРјРѕСЃС‚Рё {}
 	class Scope
 	{
 	private:
@@ -225,7 +225,7 @@ namespace Lauter
 			stack.pop_back();
 		}
 
-		//Ищет символ среди всех scopes
+		//РС‰РµС‚ СЃРёРјРІРѕР» СЃСЂРµРґРё РІСЃРµС… scopes
 		const Symbol* lookupSymbol(const std::string& name) const
 		{
 			for (size_t i = stack.size(); i-- > 0;)
@@ -236,34 +236,34 @@ namespace Lauter
 			return nullptr;
 		}
 
-		//Вставляет символ в последний scope
+		//Р’СЃС‚Р°РІР»СЏРµС‚ СЃРёРјРІРѕР» РІ РїРѕСЃР»РµРґРЅРёР№ scope
 		Symbol* insertSymbol(std::unique_ptr<Symbol> symbol)
 		{
 			return getLastScope().insertSymbol(std::move(symbol));
 		}
 
-		//Глобальный scope
+		//Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ scope
 		Scope& getFirstScope()
 		{
 			assert(!stack.empty());
 			return stack.front();
 		}
 
-		//Метод для поиска символов в локальном scope
+		//РњРµС‚РѕРґ РґР»СЏ РїРѕРёСЃРєР° СЃРёРјРІРѕР»РѕРІ РІ Р»РѕРєР°Р»СЊРЅРѕРј scope
 		Scope& getLastScope()
 		{
 			assert(!stack.empty());
 			return stack.back();
 		}
 
-		//Метод для поиска символов в локальном scope
+		//РњРµС‚РѕРґ РґР»СЏ РїРѕРёСЃРєР° СЃРёРјРІРѕР»РѕРІ РІ Р»РѕРєР°Р»СЊРЅРѕРј scope
 		const Scope& getLastScope() const
 		{
 			assert(!stack.empty());
 			return stack.back();
 		}
 
-		//Глобальный scope
+		//Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ scope
 		const Scope& getFirstScope() const
 		{
 			assert(!stack.empty());
@@ -278,10 +278,10 @@ namespace Lauter
 
 		Namespace* parent = nullptr;
 
-		//Дочерние пространства имён
+		//Р”РѕС‡РµСЂРЅРёРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° РёРјС‘РЅ
 		std::unordered_map<std::string, NamespacePtr> children;
 
-		//Смонтированные пространства имён из других модулей
+		//РЎРјРѕРЅС‚РёСЂРѕРІР°РЅРЅС‹Рµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° РёРјС‘РЅ РёР· РґСЂСѓРіРёС… РјРѕРґСѓР»РµР№
 		std::unordered_map<std::string, Namespace*> mounted;
 
 		Namespace* lookupMountedNamespace(const std::string& name) const
@@ -306,14 +306,14 @@ namespace Lauter
 		{
 			return parent;
 		}
-		//Монтирует внешнее пространство имён
+		//РњРѕРЅС‚РёСЂСѓРµС‚ РІРЅРµС€РЅРµРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјС‘РЅ
 		bool tryMountNamespace(const std::string& alias, Namespace* ns)
 		{
-			//Запрет на монтирование несуществующего namespace
+			//Р—Р°РїСЂРµС‚ РЅР° РјРѕРЅС‚РёСЂРѕРІР°РЅРёРµ РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ namespace
 			if (!ns)
 				return false;
 
-			//Запрет на дублирование псевдонима
+			//Р—Р°РїСЂРµС‚ РЅР° РґСѓР±Р»РёСЂРѕРІР°РЅРёРµ РїСЃРµРІРґРѕРЅРёРјР°
 			if (contains(alias))
 				return false;
 
@@ -321,7 +321,7 @@ namespace Lauter
 			return true;
 		}
 
-		//Создаёт дочернее пространство имён
+		//РЎРѕР·РґР°С‘С‚ РґРѕС‡РµСЂРЅРµРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјС‘РЅ
 		Namespace* tryCreateChildNamespace(const std::string& name)
 		{
 			if (contains(name))
@@ -333,7 +333,7 @@ namespace Lauter
 			return it->second.get();
 		}
 
-		//Ищет дочернее или смонтированное пространство имён
+		//РС‰РµС‚ РґРѕС‡РµСЂРЅРµРµ РёР»Рё СЃРјРѕРЅС‚РёСЂРѕРІР°РЅРЅРѕРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјС‘РЅ
 		Namespace* lookupChildNamespace(const std::string& name) const
 		{
 			if (auto it = children.find(name); it != children.end())
@@ -342,7 +342,7 @@ namespace Lauter
 			return lookupMountedNamespace(name);
 		}
 
-		//Области видимости данного пространства имён
+		//РћР±Р»Р°СЃС‚Рё РІРёРґРёРјРѕСЃС‚Рё РґР°РЅРЅРѕРіРѕ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° РёРјС‘РЅ
 		ScopeManager scopeManager;
 	};
 
@@ -366,18 +366,18 @@ namespace Lauter
 			  currentNamespace(&globalNamespace)
 		{}
 
-		//Объявленные типы
+		//РћР±СЉСЏРІР»РµРЅРЅС‹Рµ С‚РёРїС‹
 		TypeRegistry typeRegistry;
 
-		//Дерево пространств имён
+		//Р”РµСЂРµРІРѕ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІ РёРјС‘РЅ
 		Namespace globalNamespace;
 
 		const std::string& getModuleName() const
 		{
 			return sourcePath;
 		}
-		//Находит namespace по QualifiedName символа
-		//Если хоть один элемент цепи namespaces не существует, возвращает nullptr и записывает индекс имени этого namespace в unknownPartIndex
+		//РќР°С…РѕРґРёС‚ namespace РїРѕ QualifiedName СЃРёРјРІРѕР»Р°
+		//Р•СЃР»Рё С…РѕС‚СЊ РѕРґРёРЅ СЌР»РµРјРµРЅС‚ С†РµРїРё namespaces РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚, РІРѕР·РІСЂР°С‰Р°РµС‚ nullptr Рё Р·Р°РїРёСЃС‹РІР°РµС‚ РёРЅРґРµРєСЃ РёРјРµРЅРё СЌС‚РѕРіРѕ namespace РІ unknownPartIndex
 		const Namespace* lookupNamespace(const QualifiedName& symbolName, size_t& unknownPartIndex) const
 		{
 			const auto& parts = symbolName.parts;
@@ -489,13 +489,13 @@ namespace Lauter
 			{
 				const auto& part = namespaceName.parts[partIndex++];
 
-				//Ищем существующее дочернее пространство имён
+				//РС‰РµРј СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРµ РґРѕС‡РµСЂРЅРµРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјС‘РЅ
 				ns = ns->lookupChildNamespace(part);
 
-				//Или создаём новое
+				//РР»Рё СЃРѕР·РґР°С‘Рј РЅРѕРІРѕРµ
 				if (!ns) ns = ns->tryCreateChildNamespace(part);
 
-				//Присвоение валидного значения гарантируется одним из методов выше
+				//РџСЂРёСЃРІРѕРµРЅРёРµ РІР°Р»РёРґРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ РіР°СЂР°РЅС‚РёСЂСѓРµС‚СЃСЏ РѕРґРЅРёРј РёР· РјРµС‚РѕРґРѕРІ РІС‹С€Рµ
 				assert(ns);
 			}
 
@@ -517,10 +517,10 @@ namespace Lauter
 	private:
 		using ModulePtr = std::unique_ptr<Module>;
 
-		//Модули
+		//РњРѕРґСѓР»Рё
 		std::unordered_map<ModulePath, ModulePtr> modules;
 
-		//Модуль-ядро, предоставляющий базовые типы (int, bool, string)
+		//РњРѕРґСѓР»СЊ-СЏРґСЂРѕ, РїСЂРµРґРѕСЃС‚Р°РІР»СЏСЋС‰РёР№ Р±Р°Р·РѕРІС‹Рµ С‚РёРїС‹ (int, bool, string)
 		std::unique_ptr<Module> coreModule;
 
 		BuiltinTypeCache builtins;
@@ -535,7 +535,7 @@ namespace Lauter
 			coreModule = std::make_unique<Module>(nullptr, "$core");
 			TypeRegistry& builtinTypes = coreModule->typeRegistry;
 	
-			//Регистрация типа
+			//Р РµРіРёСЃС‚СЂР°С†РёСЏ С‚РёРїР°
 			auto registerType = [&](QualifiedName name, size_t size, size_t alignment) -> PrimitiveType*
 				{
 					PrimitiveType* type = builtinTypes.create<PrimitiveType>(name, size, alignment);
@@ -547,7 +547,7 @@ namespace Lauter
 					return type;
 				};
 
-			//Регистрация псевдонима типа
+			//Р РµРіРёСЃС‚СЂР°С†РёСЏ РїСЃРµРІРґРѕРЅРёРјР° С‚РёРїР°
 			auto registerAlias = [&](QualifiedName name, SemanticType* target)
 				{
 					AliasType* alias = builtinTypes.create<AliasType>(name, target);
@@ -559,24 +559,24 @@ namespace Lauter
 				};
 
 
-			//Целочисленный тип
+			//Р¦РµР»РѕС‡РёСЃР»РµРЅРЅС‹Р№ С‚РёРї
 			builtins.int8 = registerType(QualifiedName{ {"int8"} }, 1, 1);
 			builtins.int16 = registerType(QualifiedName{ {"int16"} }, 2, 2);
 			builtins.int32 = registerType(QualifiedName{ {"int32"} }, 4, 4);
 
-			//Вещественный тип
+			//Р’РµС‰РµСЃС‚РІРµРЅРЅС‹Р№ С‚РёРї
 			builtins.real64 = registerType(QualifiedName{ {"real64"} }, 8, 8);
 			builtins.real32 = registerType(QualifiedName{ {"real32"} }, 4, 4);
 
-			//Прочие типы
+			//РџСЂРѕС‡РёРµ С‚РёРїС‹
 			builtins.boolType = registerType(QualifiedName{ {"bool"} }, 1, 1);
 			builtins.voidType = registerType(QualifiedName{ {"void"} }, 0, 0);
 
-			//Псевдонимы
+			//РџСЃРµРІРґРѕРЅРёРјС‹
 			registerAlias(QualifiedName{ {"int"} }, builtins.int32);
 			registerAlias(QualifiedName{ {"real"} }, builtins.real64);
 
-			//Более привычные имена для вещественного типа
+			//Р‘РѕР»РµРµ РїСЂРёРІС‹С‡РЅС‹Рµ РёРјРµРЅР° РґР»СЏ РІРµС‰РµСЃС‚РІРµРЅРЅРѕРіРѕ С‚РёРїР°
 			registerAlias(QualifiedName{ {"float"} }, builtins.real32);
 			registerAlias(QualifiedName{ {"double"} }, builtins.real64);
 		}

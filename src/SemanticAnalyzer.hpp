@@ -20,15 +20,15 @@ namespace Lauter
 		void warning(AST::ASTNode& node, ReportCode code, const std::string& message);
 		void error(AST::ASTNode& node, ReportCode code, const std::string& message);
 
-		//Формирует сигнатуру функции из переданных параметров
+		//Р¤РѕСЂРјРёСЂСѓРµС‚ СЃРёРіРЅР°С‚СѓСЂСѓ С„СѓРЅРєС†РёРё РёР· РїРµСЂРµРґР°РЅРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ
 		FunctionSignature buildCallSignature(std::vector<AST::ExpressionPtr>& arguments);
 
-		//Макрос для методов, реализующих обход Expression-узлов
+		//РњР°РєСЂРѕСЃ РґР»СЏ РјРµС‚РѕРґРѕРІ, СЂРµР°Р»РёР·СѓСЋС‰РёС… РѕР±С…РѕРґ Expression-СѓР·Р»РѕРІ
 		#define X(name) QualifiedType visit(AST::name&) override;
 		LAUTER_AST_EXPR_NODES(X)
 		#undef X
 
-		//Макрос для методов, реализующих обход Statement-узлов
+		//РњР°РєСЂРѕСЃ РґР»СЏ РјРµС‚РѕРґРѕРІ, СЂРµР°Р»РёР·СѓСЋС‰РёС… РѕР±С…РѕРґ Statement-СѓР·Р»РѕРІ
 		#define X(name) void visit(AST::name&) override;
 		LAUTER_AST_STMT_NODES(X)
 		#undef X

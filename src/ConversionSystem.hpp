@@ -5,20 +5,20 @@
 
 namespace Lauter::Conversion
 {
-	//Классификация без построения узла
+	//РљР»Р°СЃСЃРёС„РёРєР°С†РёСЏ Р±РµР· РїРѕСЃС‚СЂРѕРµРЅРёСЏ СѓР·Р»Р°
 	enum class ConversionKind
 	{
-		Invalid,   //невозможное преобразование
-		Unchanged, //не нуждается в преобразовании (совпадает + модификаторы совместимы)
-		Implicit,  //допустимо неявно
-		Explicit,  //требует явного приведения
+		Invalid,   //РЅРµРІРѕР·РјРѕР¶РЅРѕРµ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ
+		Unchanged, //РЅРµ РЅСѓР¶РґР°РµС‚СЃСЏ РІ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРё (СЃРѕРІРїР°РґР°РµС‚ + РјРѕРґРёС„РёРєР°С‚РѕСЂС‹ СЃРѕРІРјРµСЃС‚РёРјС‹)
+		Implicit,  //РґРѕРїСѓСЃС‚РёРјРѕ РЅРµСЏРІРЅРѕ
+		Explicit,  //С‚СЂРµР±СѓРµС‚ СЏРІРЅРѕРіРѕ РїСЂРёРІРµРґРµРЅРёСЏ
 	};
 
-	//Какой AST-узел нужно построить, если решили конвертировать.
-	//Известно уже на этапе classify — не нужно повторно резолвить алиасы при build.
+	//РљР°РєРѕР№ AST-СѓР·РµР» РЅСѓР¶РЅРѕ РїРѕСЃС‚СЂРѕРёС‚СЊ, РµСЃР»Рё СЂРµС€РёР»Рё РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°С‚СЊ.
+	//РР·РІРµСЃС‚РЅРѕ СѓР¶Рµ РЅР° СЌС‚Р°РїРµ classify вЂ” РЅРµ РЅСѓР¶РЅРѕ РїРѕРІС‚РѕСЂРЅРѕ СЂРµР·РѕР»РІРёС‚СЊ Р°Р»РёР°СЃС‹ РїСЂРё build.
 	enum class ConversionOperation
 	{
-		None,      // Unchanged/Invalid — строить нечего
+		None,      // Unchanged/Invalid вЂ” СЃС‚СЂРѕРёС‚СЊ РЅРµС‡РµРіРѕ
 		NumericCast,   // ConversionExpression
 		InterfaceCast, // InterfaceCastExpression
 	};
@@ -37,10 +37,10 @@ namespace Lauter::Conversion
 		const BuiltinTypeCache& primitives;
 
 
-		//Проверяет доступность изменения квалификаторов
+		//РџСЂРѕРІРµСЂСЏРµС‚ РґРѕСЃС‚СѓРїРЅРѕСЃС‚СЊ РёР·РјРµРЅРµРЅРёСЏ РєРІР°Р»РёС„РёРєР°С‚РѕСЂРѕРІ
 		bool checkModifiers(const QualifiedType& from, const QualifiedType& to) const;
 
-		//Проверяет, реализует ли objType интерфейс ifaceType
+		//РџСЂРѕРІРµСЂСЏРµС‚, СЂРµР°Р»РёР·СѓРµС‚ Р»Рё objType РёРЅС‚РµСЂС„РµР№СЃ ifaceType
 		bool implementsInterface(const SemanticType* objType, const SemanticType* ifaceType) const;
 
 		inline int numericRankOf(const SemanticType* type) const
@@ -58,11 +58,11 @@ namespace Lauter::Conversion
 			: primitives(primitives) 
 		{}
 
-		//Оценка преобразования
+		//РћС†РµРЅРєР° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ
 		Classification classify(const QualifiedType& from, const QualifiedType& to) const;
 
-		//Вызывается только после classify() == Implicit/Explicit
-		//Возвращает специальный AST узел преобразования типов
+		//Р’С‹Р·С‹РІР°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ classify() == Implicit/Explicit
+		//Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРµС†РёР°Р»СЊРЅС‹Р№ AST СѓР·РµР» РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ С‚РёРїРѕРІ
 		AST::ExpressionPtr build(AST::ExpressionPtr expression, const Classification& classification, const QualifiedType& to) const;
 	};
 }

@@ -39,7 +39,7 @@ namespace Lauter
 
 		case TokenType::END:        return "END";
 
-			// На случай, если в функцию прилетит невалидный каст, например: static_cast<TokenType>(99)
+			// РќР° СЃР»СѓС‡Р°Р№, РµСЃР»Рё РІ С„СѓРЅРєС†РёСЋ РїСЂРёР»РµС‚РёС‚ РЅРµРІР°Р»РёРґРЅС‹Р№ РєР°СЃС‚, РЅР°РїСЂРёРјРµСЂ: static_cast<TokenType>(99)
 		default:                    return "Unknown";
 		}
 	}
@@ -87,11 +87,11 @@ namespace Lauter
 	{
 		const Token& token = stream.peek();
 
-		//Проверка на совпадение типа
+		//РџСЂРѕРІРµСЂРєР° РЅР° СЃРѕРІРїР°РґРµРЅРёРµ С‚РёРїР°
 		if (token.type != type)
 			return false;
 
-		//Проверка на совпадение содержимого
+		//РџСЂРѕРІРµСЂРєР° РЅР° СЃРѕРІРїР°РґРµРЅРёРµ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ
 		if (!value.empty() && token.value != value)
 			return false;
 
@@ -141,7 +141,7 @@ namespace Lauter
 			check(TokenType::Keyword, "at");
 	}
 
-	//Съедает невалидный участок кода
+	//РЎСЉРµРґР°РµС‚ РЅРµРІР°Р»РёРґРЅС‹Р№ СѓС‡Р°СЃС‚РѕРє РєРѕРґР°
 	void Parser::synchronize()
 	{
 		while (!stream.end())
@@ -168,17 +168,17 @@ namespace Lauter
 		}
 	}
 
-	//Заглушка для recovery
+	//Р—Р°РіР»СѓС€РєР° РґР»СЏ recovery
 	AST::ExpressionPtr Parser::makeErrorExpression(SourceLocation location) const
 	{
 		return std::make_unique<ErrorExpression>(location);
 	}
-	//Заглушка для recovery
+	//Р—Р°РіР»СѓС€РєР° РґР»СЏ recovery
 	AST::StatementPtr Parser::makeErrorStatement(SourceLocation location) const
 	{
 		return std::make_unique<ErrorStatement>(location);
 	}
-	//Заглушка для recovery
+	//Р—Р°РіР»СѓС€РєР° РґР»СЏ recovery
 	AST::DeclarationPtr Parser::makeErrorDeclaration(SourceLocation location) const
 	{
 		return std::make_unique<ErrorDeclaration>(location);
@@ -193,7 +193,7 @@ namespace Lauter
 		catch (const ParseError& ex)
 		{
 			Report report;
-			report.location.source = "<?>";//заглушка
+			report.location.source = "<?>";//Р·Р°РіР»СѓС€РєР°
 			report.location.row = ex.location.row;
 			report.location.column = ex.location.column;
 			report.message = ex.message;
@@ -215,7 +215,7 @@ namespace Lauter
 		catch (const ParseError& ex)
 		{
 			Report report;
-			report.location.source = "<?>";//заглушка
+			report.location.source = "<?>";//Р·Р°РіР»СѓС€РєР°
 			report.location.row = ex.location.row;
 			report.location.column = ex.location.column;
 			report.message = ex.message;
@@ -229,14 +229,14 @@ namespace Lauter
 		}
 	}
 
-	//Собирает составные имена вида A или A::B::C и т.п.
+	//РЎРѕР±РёСЂР°РµС‚ СЃРѕСЃС‚Р°РІРЅС‹Рµ РёРјРµРЅР° РІРёРґР° A РёР»Рё A::B::C Рё С‚.Рї.
 	QualifiedName Parser::parseQualifiedName()
 	{
 		QualifiedName name;
 
 		name.parts.push_back(expect(TokenType::Identifier).value);
 
-		//Продолжает цепочку вложенных пространств имён
+		//РџСЂРѕРґРѕР»Р¶Р°РµС‚ С†РµРїРѕС‡РєСѓ РІР»РѕР¶РµРЅРЅС‹С… РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІ РёРјС‘РЅ
 		while (match(TokenType::Operator, "::"))
 		{
 			name.parts.push_back(expect(TokenType::Identifier).value);
@@ -245,7 +245,7 @@ namespace Lauter
 		return name;
 	}
 
-	//Собирает квалификаторы, имя объекта, круглые скобки и шаблонные параметры
+	//РЎРѕР±РёСЂР°РµС‚ РєРІР°Р»РёС„РёРєР°С‚РѕСЂС‹, РёРјСЏ РѕР±СЉРµРєС‚Р°, РєСЂСѓРіР»С‹Рµ СЃРєРѕР±РєРё Рё С€Р°Р±Р»РѕРЅРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
 	TypeRef Parser::parseTypeRef()
 	{
 		TypeRef type;
@@ -262,7 +262,7 @@ namespace Lauter
 
 		type.typeName = parseQualifiedName();
 
-		//Обработка дженериков
+		//РћР±СЂР°Р±РѕС‚РєР° РґР¶РµРЅРµСЂРёРєРѕРІ
 		if (match(TokenType::LPAREN))
 		{
 			type.generics = parseGenericArgumentList();
@@ -333,7 +333,7 @@ namespace Lauter
 		return arg;
 	}
 
-	//Собирает шаблонные аргументы и запятые между ними
+	//РЎРѕР±РёСЂР°РµС‚ С€Р°Р±Р»РѕРЅРЅС‹Рµ Р°СЂРіСѓРјРµРЅС‚С‹ Рё Р·Р°РїСЏС‚С‹Рµ РјРµР¶РґСѓ РЅРёРјРё
 	std::vector<GenericArgument> Parser::parseGenericArgumentList()
 	{
 		std::vector<GenericArgument> result;
@@ -349,7 +349,7 @@ namespace Lauter
 		return result;
 	}
 
-	//Собирает TypeRef, имя параметра и значение по умолчанию
+	//РЎРѕР±РёСЂР°РµС‚ TypeRef, РёРјСЏ РїР°СЂР°РјРµС‚СЂР° Рё Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 	Parameter Parser::parseParameter()
 	{
 
@@ -366,7 +366,7 @@ namespace Lauter
 		return param;
 	}
 
-	//Собирает параметры и запятые между ними
+	//РЎРѕР±РёСЂР°РµС‚ РїР°СЂР°РјРµС‚СЂС‹ Рё Р·Р°РїСЏС‚С‹Рµ РјРµР¶РґСѓ РЅРёРјРё
 	std::vector<Parameter> Parser::parseParameterList()
 	{
 		expect(TokenType::LPAREN); //'('
@@ -403,7 +403,7 @@ namespace Lauter
 		return result;
 	}
 
-	//Собирает TypeRef и запятые между ними
+	//РЎРѕР±РёСЂР°РµС‚ TypeRef Рё Р·Р°РїСЏС‚С‹Рµ РјРµР¶РґСѓ РЅРёРјРё
 	std::vector<TypeRef>  Parser::parseReturnTypeList()
 	{
 		std::vector<TypeRef> returns;
@@ -419,7 +419,7 @@ namespace Lauter
 
 
 
-	//РАЗБОР ВЫРАЖЕНИЙ
+	//Р РђР—Р‘РћР  Р’Р«Р РђР–Р•РќРР™
 
 	AST::ExpressionPtr Parser::parseExpression()
 	{
@@ -430,7 +430,7 @@ namespace Lauter
 	{
 		auto left = parseOr();
 
-		//Если не встретился оператор присваивания — возвращаем уже разобранное выражение
+		//Р•СЃР»Рё РЅРµ РІСЃС‚СЂРµС‚РёР»СЃСЏ РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ вЂ” РІРѕР·РІСЂР°С‰Р°РµРј СѓР¶Рµ СЂР°Р·РѕР±СЂР°РЅРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ
 		if (!check(TokenType::Operator))
 			return left;
 
@@ -452,7 +452,7 @@ namespace Lauter
 		else
 			return left;
 
-		//Съедаем оператор присваивания
+		//РЎСЉРµРґР°РµРј РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
 		stream.get();
 
 		auto node = std::make_unique<AssignmentExpression>();
@@ -460,7 +460,7 @@ namespace Lauter
 		node->op = op;
 		node->target = std::move(left);
 
-		//Разбираем выражение после оператора присваивания
+		//Р Р°Р·Р±РёСЂР°РµРј РІС‹СЂР°Р¶РµРЅРёРµ РїРѕСЃР»Рµ РѕРїРµСЂР°С‚РѕСЂР° РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
 		node->value = parseAssignment();
 
 		return node;
@@ -470,7 +470,7 @@ namespace Lauter
 	{
 		auto left = parseAnd();
 
-		//Разбираем цепочку дизъюнкций
+		//Р Р°Р·Р±РёСЂР°РµРј С†РµРїРѕС‡РєСѓ РґРёР·СЉСЋРЅРєС†РёР№
 		while (match(TokenType::Operator, "or"))
 		{
 			auto node = std::make_unique<BinaryExpression>();
@@ -489,7 +489,7 @@ namespace Lauter
 	{
 		auto left = parseComparison();
 
-		//Разбираем цепочку конъюнкций
+		//Р Р°Р·Р±РёСЂР°РµРј С†РµРїРѕС‡РєСѓ РєРѕРЅСЉСЋРЅРєС†РёР№
 		while (match(TokenType::Operator, "and"))
 		{
 			auto node = std::make_unique<BinaryExpression>();
@@ -524,7 +524,7 @@ namespace Lauter
 		else if (token.value == ">=")
 			op = BinaryOperator::GreaterEqual;
 		else
-			//Если оператор не является оператором сравнения
+			//Р•СЃР»Рё РѕРїРµСЂР°С‚РѕСЂ РЅРµ СЏРІР»СЏРµС‚СЃСЏ РѕРїРµСЂР°С‚РѕСЂРѕРј СЃСЂР°РІРЅРµРЅРёСЏ
 			return left;
 
 		stream.get();
@@ -545,7 +545,7 @@ namespace Lauter
 	{
 		auto left = parseMulDiv();
 
-		//Разбираем арифметические операции сложения и вычитания
+		//Р Р°Р·Р±РёСЂР°РµРј Р°СЂРёС„РјРµС‚РёС‡РµСЃРєРёРµ РѕРїРµСЂР°С†РёРё СЃР»РѕР¶РµРЅРёСЏ Рё РІС‹С‡РёС‚Р°РЅРёСЏ
 		while (check(TokenType::Operator))
 		{
 			BinaryOperator op;
@@ -573,7 +573,7 @@ namespace Lauter
 	{
 		auto left = parseUnary();
 
-		//Разбираем арифметические операции умножения и деления, а также деления по модулю
+		//Р Р°Р·Р±РёСЂР°РµРј Р°СЂРёС„РјРµС‚РёС‡РµСЃРєРёРµ РѕРїРµСЂР°С†РёРё СѓРјРЅРѕР¶РµРЅРёСЏ Рё РґРµР»РµРЅРёСЏ, Р° С‚Р°РєР¶Рµ РґРµР»РµРЅРёСЏ РїРѕ РјРѕРґСѓР»СЋ
 		while (check(TokenType::Operator))
 		{
 			BinaryOperator op;
@@ -604,7 +604,7 @@ namespace Lauter
 	{
 		auto left = parsePostfix();
 
-		//Разбор правоассоциативной операции возведения в степень
+		//Р Р°Р·Р±РѕСЂ РїСЂР°РІРѕР°СЃСЃРѕС†РёР°С‚РёРІРЅРѕР№ РѕРїРµСЂР°С†РёРё РІРѕР·РІРµРґРµРЅРёСЏ РІ СЃС‚РµРїРµРЅСЊ
 		if (!match(TokenType::Operator, "**"))
 			return left;
 
@@ -613,7 +613,7 @@ namespace Lauter
 		node->op = BinaryOperator::Power;
 		node->leftOperand = std::move(left);
 
-		//Правоассоциативность
+		//РџСЂР°РІРѕР°СЃСЃРѕС†РёР°С‚РёРІРЅРѕСЃС‚СЊ
 		node->rightOperand = parsePower();
 
 		return node;
@@ -621,7 +621,7 @@ namespace Lauter
 
 	ExpressionPtr Parser::parseUnary()
 	{
-		//Разбор унарных операций
+		//Р Р°Р·Р±РѕСЂ СѓРЅР°СЂРЅС‹С… РѕРїРµСЂР°С†РёР№
 		if (check(TokenType::Operator))
 		{
 			UnaryOperator op;
@@ -649,23 +649,23 @@ namespace Lauter
 		return parsePower();
 	}
 
-	//Постфиксные выражения (оператор индекса, обращение к методам и полям)
+	//РџРѕСЃС‚С„РёРєСЃРЅС‹Рµ РІС‹СЂР°Р¶РµРЅРёСЏ (РѕРїРµСЂР°С‚РѕСЂ РёРЅРґРµРєСЃР°, РѕР±СЂР°С‰РµРЅРёРµ Рє РјРµС‚РѕРґР°Рј Рё РїРѕР»СЏРј)
 	ExpressionPtr Parser::parsePostfix()
 	{
-		//identifier, literal, (expr), tuple и т.п.
+		//identifier, literal, (expr), tuple Рё С‚.Рї.
 		auto target = parsePrimary();
 
-		//Список операций (в том числе операции над результатом — "arr[index](argument)()" )
+		//РЎРїРёСЃРѕРє РѕРїРµСЂР°С†РёР№ (РІ С‚РѕРј С‡РёСЃР»Рµ РѕРїРµСЂР°С†РёРё РЅР°Рґ СЂРµР·СѓР»СЊС‚Р°С‚РѕРј вЂ” "arr[index](argument)()" )
 		std::vector<PostfixOperation> operations;
 
 		while (true)
 		{
-			//Разбор обращения по индексу
+			//Р Р°Р·Р±РѕСЂ РѕР±СЂР°С‰РµРЅРёСЏ РїРѕ РёРЅРґРµРєСЃСѓ
 			if (match(TokenType::LBRACKET))
 			{
 				IndexOperation op;
 
-				//выражение внутри [...]
+				//РІС‹СЂР°Р¶РµРЅРёРµ РІРЅСѓС‚СЂРё [...]
 				op.index = parseExpression();
 
 				expect(TokenType::RBRACKET);
@@ -674,7 +674,7 @@ namespace Lauter
 				continue;
 			}
 
-			//Разбор обращения к полю объекта
+			//Р Р°Р·Р±РѕСЂ РѕР±СЂР°С‰РµРЅРёСЏ Рє РїРѕР»СЋ РѕР±СЉРµРєС‚Р°
 			if (match(TokenType::DOT))
 			{
 				const Token& id = expect(TokenType::Identifier);
@@ -686,7 +686,7 @@ namespace Lauter
 				continue;
 			}
 
-			//Вызов метода/результата 
+			//Р’С‹Р·РѕРІ РјРµС‚РѕРґР°/СЂРµР·СѓР»СЊС‚Р°С‚Р° 
 			if (match(TokenType::LPAREN))
 			{
 				CallOperation op;
@@ -699,15 +699,15 @@ namespace Lauter
 				continue;
 			}
 
-			//Если следующая операция не является постфиксной — разбор окончен
+			//Р•СЃР»Рё СЃР»РµРґСѓСЋС‰Р°СЏ РѕРїРµСЂР°С†РёСЏ РЅРµ СЏРІР»СЏРµС‚СЃСЏ РїРѕСЃС‚С„РёРєСЃРЅРѕР№ вЂ” СЂР°Р·Р±РѕСЂ РѕРєРѕРЅС‡РµРЅ
 			break;
 		}
 
-		//Если список операций пуст — не создаём лишний узел AST
+		//Р•СЃР»Рё СЃРїРёСЃРѕРє РѕРїРµСЂР°С†РёР№ РїСѓСЃС‚ вЂ” РЅРµ СЃРѕР·РґР°С‘Рј Р»РёС€РЅРёР№ СѓР·РµР» AST
 		if (operations.empty())
 			return target;
 
-		//Иначе создаём PostfixExpression
+		//РРЅР°С‡Рµ СЃРѕР·РґР°С‘Рј PostfixExpression
 		auto node = std::make_unique<PostfixExpression>();
 
 		node->target = std::move(target);
@@ -722,7 +722,7 @@ namespace Lauter
 
 		switch (token.type)
 		{
-			//Целочисленный литерал
+			//Р¦РµР»РѕС‡РёСЃР»РµРЅРЅС‹Р№ Р»РёС‚РµСЂР°Р»
 		case TokenType::Integer:
 		{
 			auto node = std::make_unique<AST::Literal>();
@@ -735,7 +735,7 @@ namespace Lauter
 			return node;
 		}
 
-		//Литерал вещественного числа
+		//Р›РёС‚РµСЂР°Р» РІРµС‰РµСЃС‚РІРµРЅРЅРѕРіРѕ С‡РёСЃР»Р°
 		case TokenType::Real:
 		{
 			auto node = std::make_unique<AST::Literal>();
@@ -746,7 +746,7 @@ namespace Lauter
 			return node;
 		}
 
-		//Строковой литерал
+		//РЎС‚СЂРѕРєРѕРІРѕР№ Р»РёС‚РµСЂР°Р»
 		case TokenType::String:
 		{
 			auto node = std::make_unique<AST::Literal>();
@@ -757,7 +757,7 @@ namespace Lauter
 			return node;
 		}
 
-		//Логическая истина или логическая ложь как ключевое слово
+		//Р›РѕРіРёС‡РµСЃРєР°СЏ РёСЃС‚РёРЅР° РёР»Рё Р»РѕРіРёС‡РµСЃРєР°СЏ Р»РѕР¶СЊ РєР°Рє РєР»СЋС‡РµРІРѕРµ СЃР»РѕРІРѕ
 		case TokenType::Keyword:
 		{
 			if (token.value == "true" || token.value == "false")
@@ -776,7 +776,7 @@ namespace Lauter
 		}
 
 
-		//Объект
+		//РћР±СЉРµРєС‚
 		case TokenType::Identifier:
 		{
 			auto node = std::make_unique<AST::IdentifierExpression>(
@@ -787,7 +787,7 @@ namespace Lauter
 			return node;
 		}
 
-		//Литерал контейнера
+		//Р›РёС‚РµСЂР°Р» РєРѕРЅС‚РµР№РЅРµСЂР°
 		case TokenType::LBRACKET:
 		{
 			return parseContainerLiteralExpression();
@@ -810,8 +810,8 @@ namespace Lauter
 		return makeErrorExpression(getLocation(token));
 	}
 
-	//Проверяет, является ли выражение началом цепочки неоднозначных вызовов
-	//Исключает вероятность попадания выражений вида A + B в AmbiguousChain
+	//РџСЂРѕРІРµСЂСЏРµС‚, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РІС‹СЂР°Р¶РµРЅРёРµ РЅР°С‡Р°Р»РѕРј С†РµРїРѕС‡РєРё РЅРµРѕРґРЅРѕР·РЅР°С‡РЅС‹С… РІС‹Р·РѕРІРѕРІ
+	//РСЃРєР»СЋС‡Р°РµС‚ РІРµСЂРѕСЏС‚РЅРѕСЃС‚СЊ РїРѕРїР°РґР°РЅРёСЏ РІС‹СЂР°Р¶РµРЅРёР№ РІРёРґР° A + B РІ AmbiguousChain
 	bool Parser::isAmbiguousConstruct() const
 	{
 		if (!check(TokenType::Identifier))
@@ -872,7 +872,7 @@ namespace Lauter
 		return false;
 	}
 
-	//Собирает токены в цепочку неоднозначных вызовов для дальншего разбора в семантическом анализаторе
+	//РЎРѕР±РёСЂР°РµС‚ С‚РѕРєРµРЅС‹ РІ С†РµРїРѕС‡РєСѓ РЅРµРѕРґРЅРѕР·РЅР°С‡РЅС‹С… РІС‹Р·РѕРІРѕРІ РґР»СЏ РґР°Р»СЊРЅС€РµРіРѕ СЂР°Р·Р±РѕСЂР° РІ СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕРј Р°РЅР°Р»РёР·Р°С‚РѕСЂРµ
 	AST::StatementPtr Parser::parseAmbiguousStatement()
 	{
 		auto chain = std::make_unique<AST::AmbiguousChain>();
@@ -890,7 +890,7 @@ namespace Lauter
 			chain->segments.push_back(std::move(segment));
 
 			if (!check(TokenType::Identifier))
-				break; // впереди не IDENT вовсе — цепочка кончилась раньше нашего lookahead'а
+				break; // РІРїРµСЂРµРґРё РЅРµ IDENT РІРѕРІСЃРµ вЂ” С†РµРїРѕС‡РєР° РєРѕРЅС‡РёР»Р°СЃСЊ СЂР°РЅСЊС€Рµ РЅР°С€РµРіРѕ lookahead'Р°
 
 			TokenType nextType = stream.peek(1).type;
 
@@ -902,7 +902,7 @@ namespace Lauter
 			if (nextType == TokenType::LPAREN)
 				continue;
 
-			// IDENT keyword — часть цепочки, цепочка завершается на нём
+			// IDENT keyword вЂ” С‡Р°СЃС‚СЊ С†РµРїРѕС‡РєРё, С†РµРїРѕС‡РєР° Р·Р°РІРµСЂС€Р°РµС‚СЃСЏ РЅР° РЅС‘Рј
 			if (nextType == TokenType::Keyword)
 			{
 				Token identTok = stream.peek();
@@ -911,7 +911,7 @@ namespace Lauter
 				break;
 			}
 
-			// IDENT = — последний сегмент цепочки + инициализатор
+			// IDENT = вЂ” РїРѕСЃР»РµРґРЅРёР№ СЃРµРіРјРµРЅС‚ С†РµРїРѕС‡РєРё + РёРЅРёС†РёР°Р»РёР·Р°С‚РѕСЂ
 			if (nextType == TokenType::Operator && stream.peek(1).value == "=")
 			{
 				Token identTok = stream.peek();
@@ -923,7 +923,7 @@ namespace Lauter
 				break;
 			}
 
-			// IDENT operator (любой другой) — не часть цепочки, оставляем непотреблённым
+			// IDENT operator (Р»СЋР±РѕР№ РґСЂСѓРіРѕР№) вЂ” РЅРµ С‡Р°СЃС‚СЊ С†РµРїРѕС‡РєРё, РѕСЃС‚Р°РІР»СЏРµРј РЅРµРїРѕС‚СЂРµР±Р»С‘РЅРЅС‹Рј
 			break;
 		}
 
@@ -935,7 +935,7 @@ namespace Lauter
 		expect(TokenType::LBRACE);
 		auto node = std::make_unique<AST::Block>();
 
-		//Сбор списка инструкций до }
+		//РЎР±РѕСЂ СЃРїРёСЃРєР° РёРЅСЃС‚СЂСѓРєС†РёР№ РґРѕ }
 		while (!match(TokenType::RBRACE))
 		{
 			auto stmt = parseStatement();
@@ -961,13 +961,13 @@ namespace Lauter
 
 		expect(TokenType::Keyword, "if");
 
-		//Условие
+		//РЈСЃР»РѕРІРёРµ
 		node->condition = parseExpression();
 
-		//then-блок
+		//then-Р±Р»РѕРє
 		node->thenBody = parseBody();
 
-		//else-блок
+		//else-Р±Р»РѕРє
 		if (match(TokenType::Keyword, "else"))
 			node->elseBody = parseBody();
 
@@ -979,14 +979,14 @@ namespace Lauter
 
 		expect(TokenType::Keyword, "while");
 		
-		//RAII защита от вызова continue/break вне тела цикла
+		//RAII Р·Р°С‰РёС‚Р° РѕС‚ РІС‹Р·РѕРІР° continue/break РІРЅРµ С‚РµР»Р° С†РёРєР»Р°
 		LoopGuard loopGuard(loopDepth);
 
-		//Условие
+		//РЈСЃР»РѕРІРёРµ
 		node->condition = parseExpression();
 
-		//Тело цикла
-		node->body = parseBlock(); //Не допускает отсутствия фигурных скобок
+		//РўРµР»Рѕ С†РёРєР»Р°
+		node->body = parseBlock(); //РќРµ РґРѕРїСѓСЃРєР°РµС‚ РѕС‚СЃСѓС‚СЃС‚РІРёСЏ С„РёРіСѓСЂРЅС‹С… СЃРєРѕР±РѕРє
 
 
 		return node;
@@ -998,19 +998,19 @@ namespace Lauter
 
 		expect(TokenType::Keyword, "for");
 
-		//RAII защита от вызова continue/break вне тела цикла
+		//RAII Р·Р°С‰РёС‚Р° РѕС‚ РІС‹Р·РѕРІР° continue/break РІРЅРµ С‚РµР»Р° С†РёРєР»Р°
 		LoopGuard loopGuard(loopDepth);
 
-		//Имя создаваемого итератора
+		//РРјСЏ СЃРѕР·РґР°РІР°РµРјРѕРіРѕ РёС‚РµСЂР°С‚РѕСЂР°
 		node->iteratorName = expect(TokenType::Identifier).value;
 
 		expect(TokenType::Keyword, "in");
 
-		//Цель обхода
+		//Р¦РµР»СЊ РѕР±С…РѕРґР°
 		node->iterable = parseExpression();
 
-		//Тело цикла
-		node->body = parseBlock(); //Не допускает отсутствия фигурных скобок
+		//РўРµР»Рѕ С†РёРєР»Р°
+		node->body = parseBlock(); //РќРµ РґРѕРїСѓСЃРєР°РµС‚ РѕС‚СЃСѓС‚СЃС‚РІРёСЏ С„РёРіСѓСЂРЅС‹С… СЃРєРѕР±РѕРє
 
 		return node;
 	}
@@ -1021,7 +1021,7 @@ namespace Lauter
 
 		auto node = std::make_unique<AST::ReturnStatement>();
 
-		//Собираем "кортеж" из возвращаемых значений
+		//РЎРѕР±РёСЂР°РµРј "РєРѕСЂС‚РµР¶" РёР· РІРѕР·РІСЂР°С‰Р°РµРјС‹С… Р·РЅР°С‡РµРЅРёР№
 		do
 		{
 			auto stmt = parseExpression();
@@ -1039,7 +1039,7 @@ namespace Lauter
 		if (loopDepth > 0)
 			return std::make_unique<AST::ContinueStatement>();
 
-		//Ключевое слово continue вне цикла вызывает ошибку
+		//РљР»СЋС‡РµРІРѕРµ СЃР»РѕРІРѕ continue РІРЅРµ С†РёРєР»Р° РІС‹Р·С‹РІР°РµС‚ РѕС€РёР±РєСѓ
 		throw ParseError(getLocation(token), ReportCode::ContinueOutsideLoop);
 	}
 
@@ -1050,7 +1050,7 @@ namespace Lauter
 		if (loopDepth > 0)
 			return std::make_unique<AST::BreakStatement>();
 
-		//Ключевое слово break вне цикла вызывает ошибку
+		//РљР»СЋС‡РµРІРѕРµ СЃР»РѕРІРѕ break РІРЅРµ С†РёРєР»Р° РІС‹Р·С‹РІР°РµС‚ РѕС€РёР±РєСѓ
 		throw ParseError(getLocation(token), ReportCode::BreakOutsideLoop);
 	}
 
@@ -1096,7 +1096,7 @@ namespace Lauter
 			if (!check(TokenType::RBRACE))
 				throw ParseError(getLocation(token), ReportCode::DefaultCaseMustBeLast);
 
-			break;//Гарантирует, что default case объявлен последним	
+			break;//Р“Р°СЂР°РЅС‚РёСЂСѓРµС‚, С‡С‚Рѕ default case РѕР±СЉСЏРІР»РµРЅ РїРѕСЃР»РµРґРЅРёРј	
 		}
 
 		expect(TokenType::RBRACE); //}
@@ -1107,7 +1107,7 @@ namespace Lauter
 	{
 		auto node = std::make_unique<AST::WhenCase>();
 
-		//Собираем выражения через запятую
+		//РЎРѕР±РёСЂР°РµРј РІС‹СЂР°Р¶РµРЅРёСЏ С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ
 		do
 		{
 			auto expr = parseExpression();
@@ -1123,16 +1123,16 @@ namespace Lauter
 		return node;
 	}
 
-	//Работает с '(', списком аргументов (через запятую) и ')'
+	//Р Р°Р±РѕС‚Р°РµС‚ СЃ '(', СЃРїРёСЃРєРѕРј Р°СЂРіСѓРјРµРЅС‚РѕРІ (С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ) Рё ')'
 	std::vector<AST::ExpressionPtr> Parser::parseArgList()
 	{
 		std::vector<AST::ExpressionPtr> arguments;
 
-		//Преждевременный выход из функции во избежание попытки парсинга пустого набора аргументов
+		//РџСЂРµР¶РґРµРІСЂРµРјРµРЅРЅС‹Р№ РІС‹С…РѕРґ РёР· С„СѓРЅРєС†РёРё РІРѕ РёР·Р±РµР¶Р°РЅРёРµ РїРѕРїС‹С‚РєРё РїР°СЂСЃРёРЅРіР° РїСѓСЃС‚РѕРіРѕ РЅР°Р±РѕСЂР° Р°СЂРіСѓРјРµРЅС‚РѕРІ
 		if (check(TokenType::RPAREN))//')'
 			return arguments;
 
-		//Сбор аргументов через запятую
+		//РЎР±РѕСЂ Р°СЂРіСѓРјРµРЅС‚РѕРІ С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ
 		do
 		{
 			arguments.push_back(parseExpression());
@@ -1171,7 +1171,7 @@ namespace Lauter
 
 		auto node = std::make_unique<AST::NamespaceDeclaration>();
 
-		//Получение имени пространства имён
+		//РџРѕР»СѓС‡РµРЅРёРµ РёРјРµРЅРё РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° РёРјС‘РЅ
 		node->name = parseQualifiedName();
 
 		expect(TokenType::LBRACE);
@@ -1206,14 +1206,14 @@ namespace Lauter
 
 		auto node = std::make_unique<AST::ImportDeclaration>();
 
-		//Разбор одиночного импорта (без фигурных скобок)
+		//Р Р°Р·Р±РѕСЂ РѕРґРёРЅРѕС‡РЅРѕРіРѕ РёРјРїРѕСЂС‚Р° (Р±РµР· С„РёРіСѓСЂРЅС‹С… СЃРєРѕР±РѕРє)
 		if (!match(TokenType::LBRACE))
 		{
 			node->imported.push_back(parseImportItem());
 			return node;
 		}
 
-		//Преждевременное завершение блока импорта (import {})
+		//РџСЂРµР¶РґРµРІСЂРµРјРµРЅРЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ Р±Р»РѕРєР° РёРјРїРѕСЂС‚Р° (import {})
 		
 		Token t = stream.peek();
 		if (match(TokenType::RBRACE))
@@ -1222,7 +1222,7 @@ namespace Lauter
 			return node;
 		}
 		
-		//Разбор блока иморта (импорты через запятую)
+		//Р Р°Р·Р±РѕСЂ Р±Р»РѕРєР° РёРјРѕСЂС‚Р° (РёРјРїРѕСЂС‚С‹ С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ)
 		while (true)
 		{
 			node->imported.push_back(parseImportItem());
@@ -1243,7 +1243,7 @@ namespace Lauter
 
 		item.sourcePath = expect(TokenType::String).value;
 
-		//Псевдоним для namespace-оболочки
+		//РџСЃРµРІРґРѕРЅРёРј РґР»СЏ namespace-РѕР±РѕР»РѕС‡РєРё
 		if (!match(TokenType::Keyword, "as"))
 			return item;
 
@@ -1257,9 +1257,9 @@ namespace Lauter
 
 		auto node = std::make_unique<AST::InterfaceDeclaration>();
 
-		Token t = stream.peek(); //токен для диагностики
+		Token t = stream.peek(); //С‚РѕРєРµРЅ РґР»СЏ РґРёР°РіРЅРѕСЃС‚РёРєРё
 
-		//Имя интерфейса
+		//РРјСЏ РёРЅС‚РµСЂС„РµР№СЃР°
 		node->name = expect(TokenType::Identifier).value;
 		expect(TokenType::LBRACE);
 
@@ -1284,7 +1284,7 @@ namespace Lauter
 		AST::InterfaceItem item;
 		Token tname = expect(TokenType::Identifier);
 
-		//Имя функции
+		//РРјСЏ С„СѓРЅРєС†РёРё
 		item.name = tname.value;
 		item.params = parseParameterList();
 
@@ -1323,7 +1323,7 @@ namespace Lauter
 		auto node = std::make_unique<AST::ConstructorDeclaration>();
 		expect(TokenType::Keyword, "constructor");
 
-		//Поддержка опциональности круглых скобок для параметров
+		//РџРѕРґРґРµСЂР¶РєР° РѕРїС†РёРѕРЅР°Р»СЊРЅРѕСЃС‚Рё РєСЂСѓРіР»С‹С… СЃРєРѕР±РѕРє РґР»СЏ РїР°СЂР°РјРµС‚СЂРѕРІ
 		if (check(TokenType::LPAREN))
 			node->params = parseParameterList();
 
@@ -1339,7 +1339,7 @@ namespace Lauter
 		auto node = std::make_unique<AST::DestructorDeclaration>();
 		expect(TokenType::Keyword, "destructor");
 
-		//Деструктор не принимает параметров, круглые скобки не ставятся
+		//Р”РµСЃС‚СЂСѓРєС‚РѕСЂ РЅРµ РїСЂРёРЅРёРјР°РµС‚ РїР°СЂР°РјРµС‚СЂРѕРІ, РєСЂСѓРіР»С‹Рµ СЃРєРѕР±РєРё РЅРµ СЃС‚Р°РІСЏС‚СЃСЏ
 		node->body = parseBlock();
 		return node;
 	}
@@ -1349,10 +1349,10 @@ namespace Lauter
 
 		expect(TokenType::Keyword, "class");
 
-		//Имя класса
+		//РРјСЏ РєР»Р°СЃСЃР°
 		node->name = expect(TokenType::Identifier).value;
 
-		//Опциональный список шаблонных типов
+		//РћРїС†РёРѕРЅР°Р»СЊРЅС‹Р№ СЃРїРёСЃРѕРє С€Р°Р±Р»РѕРЅРЅС‹С… С‚РёРїРѕРІ
 		if (match(TokenType::LPAREN))
 		{
 			do
@@ -1363,7 +1363,7 @@ namespace Lauter
 			expect(TokenType::RPAREN);
 		}
 
-		//Опциональный список интерфейсов
+		//РћРїС†РёРѕРЅР°Р»СЊРЅС‹Р№ СЃРїРёСЃРѕРє РёРЅС‚РµСЂС„РµР№СЃРѕРІ
 		if (match(TokenType::Keyword, "with"))
 		{
 			do
@@ -1383,17 +1383,17 @@ namespace Lauter
 			{
 				while (!check(TokenType::END) && !check(TokenType::RBRACE))
 				{
-					//Конструктор (деструктор объявляется вне секций инкапсуляции)
+					//РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ (РґРµСЃС‚СЂСѓРєС‚РѕСЂ РѕР±СЉСЏРІР»СЏРµС‚СЃСЏ РІРЅРµ СЃРµРєС†РёР№ РёРЅРєР°РїСЃСѓР»СЏС†РёРё)
 					if (check(TokenType::Keyword, "constructor"))
 					{
 						AST::ClassDeclaration::Member constructor;
 						constructor.member = parseConstructorDeclaration();
-						constructor.access = access; //установка уровня инкапсуляции
+						constructor.access = access; //СѓСЃС‚Р°РЅРѕРІРєР° СѓСЂРѕРІРЅСЏ РёРЅРєР°РїСЃСѓР»СЏС†РёРё
 
 						node->members.push_back(std::move(constructor));
 						continue;
 					}
-					//Обычный член класса (поле, метод)
+					//РћР±С‹С‡РЅС‹Р№ С‡Р»РµРЅ РєР»Р°СЃСЃР° (РїРѕР»Рµ, РјРµС‚РѕРґ)
 					else node->members.push_back(parseClassMember(access));
 				}
 			};
@@ -1429,12 +1429,12 @@ namespace Lauter
 				access = AccessModifier::Protected;
 			else
 			{
-				//Разбор объявления вне секций инкапсуляции
+				//Р Р°Р·Р±РѕСЂ РѕР±СЉСЏРІР»РµРЅРёСЏ РІРЅРµ СЃРµРєС†РёР№ РёРЅРєР°РїСЃСѓР»СЏС†РёРё
 				node->members.push_back(parseClassMember(access));
 				continue;
 			}
 
-			//Разбор секций private, public, protected
+			//Р Р°Р·Р±РѕСЂ СЃРµРєС†РёР№ private, public, protected
 			expect(TokenType::LBRACE);
 			collectMembersInSection(); 
 			expect(TokenType::RBRACE);
@@ -1451,9 +1451,9 @@ namespace Lauter
 		member.access = modifier;
 
 		if (check(TokenType::Keyword, "def"))
-			member.member = parseFuncDeclaration(); //метод
+			member.member = parseFuncDeclaration(); //РјРµС‚РѕРґ
 		else
-			member.member = parseVariableDeclarationStatement(); //поле
+			member.member = parseVariableDeclarationStatement(); //РїРѕР»Рµ
 
 		return member;
 	}
@@ -1462,17 +1462,17 @@ namespace Lauter
 	{
 		auto node = std::make_unique<AST::DeclarationStatement>();
 
-		node->objectType = parseTypeRef(); //модификаторы (const, ref) и тип объекта
-		node->objectName = expect(TokenType::Identifier).value; //имя объекта
+		node->objectType = parseTypeRef(); //РјРѕРґРёС„РёРєР°С‚РѕСЂС‹ (const, ref) Рё С‚РёРї РѕР±СЉРµРєС‚Р°
+		node->objectName = expect(TokenType::Identifier).value; //РёРјСЏ РѕР±СЉРµРєС‚Р°
 
-		//Опциональный инициализатор
+		//РћРїС†РёРѕРЅР°Р»СЊРЅС‹Р№ РёРЅРёС†РёР°Р»РёР·Р°С‚РѕСЂ
 		if (match(TokenType::Operator, "="))
 			node->initializer = parseExpression(); 
 
 		return node;
 	}
 
-	//Инструкция-обёртка над выражением
+	//РРЅСЃС‚СЂСѓРєС†РёСЏ-РѕР±С‘СЂС‚РєР° РЅР°Рґ РІС‹СЂР°Р¶РµРЅРёРµРј
 	AST::StatementPtr Parser::parseExpressionStatement()
 	{
 		auto node = std::make_unique<AST::ExpressionStatement>();

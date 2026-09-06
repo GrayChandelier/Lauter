@@ -36,7 +36,7 @@ namespace Lauter
 	};
 	constexpr AccessModifier DefaultAccessModifier = AccessModifier::Public;
 
-	//Бинарные операторы
+	//Р‘РёРЅР°СЂРЅС‹Рµ РѕРїРµСЂР°С‚РѕСЂС‹
 	enum class BinaryOperator : uint8_t
 	{
 		// Arithmetic
@@ -69,7 +69,7 @@ namespace Lauter
 		ShiftRight
 	};
 
-	//Операторы присвоения
+	//РћРїРµСЂР°С‚РѕСЂС‹ РїСЂРёСЃРІРѕРµРЅРёСЏ
 	enum class AssignmentOperator
 	{
 		Assign,
@@ -86,7 +86,7 @@ namespace Lauter
 	};
 
 
-	//Унарные операторы
+	//РЈРЅР°СЂРЅС‹Рµ РѕРїРµСЂР°С‚РѕСЂС‹
 	enum class UnaryOperator : uint8_t
 	{
 		Negate,
@@ -95,7 +95,7 @@ namespace Lauter
 		BitwiseNot
 	};
 
-	//Позиция в коде
+	//РџРѕР·РёС†РёСЏ РІ РєРѕРґРµ
 	struct SourceLocation
 	{
 		size_t row = 0;
@@ -103,14 +103,14 @@ namespace Lauter
 	};
 
 	/*
-		SemanticType — семантический тип, хранящийся в таблице символов (принадлежит таблице символов)
-		TypeRef — сементический тип с квалификаторами, представленный в исходном коде программы (принадлежит синтаксическому анализатору)
-		QualifiedType — разрешённый TypeRef с ссылкой на семантический тип из таблицы символов (принадлежит семантическому анализатору и сборщику кода)
+		SemanticType вЂ” СЃРµРјР°РЅС‚РёС‡РµСЃРєРёР№ С‚РёРї, С…СЂР°РЅСЏС‰РёР№СЃСЏ РІ С‚Р°Р±Р»РёС†Рµ СЃРёРјРІРѕР»РѕРІ (РїСЂРёРЅР°РґР»РµР¶РёС‚ С‚Р°Р±Р»РёС†Рµ СЃРёРјРІРѕР»РѕРІ)
+		TypeRef вЂ” СЃРµРјРµРЅС‚РёС‡РµСЃРєРёР№ С‚РёРї СЃ РєРІР°Р»РёС„РёРєР°С‚РѕСЂР°РјРё, РїСЂРµРґСЃС‚Р°РІР»РµРЅРЅС‹Р№ РІ РёСЃС…РѕРґРЅРѕРј РєРѕРґРµ РїСЂРѕРіСЂР°РјРјС‹ (РїСЂРёРЅР°РґР»РµР¶РёС‚ СЃРёРЅС‚Р°РєСЃРёС‡РµСЃРєРѕРјСѓ Р°РЅР°Р»РёР·Р°С‚РѕСЂСѓ)
+		QualifiedType вЂ” СЂР°Р·СЂРµС€С‘РЅРЅС‹Р№ TypeRef СЃ СЃСЃС‹Р»РєРѕР№ РЅР° СЃРµРјР°РЅС‚РёС‡РµСЃРєРёР№ С‚РёРї РёР· С‚Р°Р±Р»РёС†С‹ СЃРёРјРІРѕР»РѕРІ (РїСЂРёРЅР°РґР»РµР¶РёС‚ СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕРјСѓ Р°РЅР°Р»РёР·Р°С‚РѕСЂСѓ Рё СЃР±РѕСЂС‰РёРєСѓ РєРѕРґР°)
 	*/
 
 	struct SemanticType;
 	
-	//Составное имя с указанием пространств имён (оператор ::)
+	//РЎРѕСЃС‚Р°РІРЅРѕРµ РёРјСЏ СЃ СѓРєР°Р·Р°РЅРёРµРј РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІ РёРјС‘РЅ (РѕРїРµСЂР°С‚РѕСЂ ::)
 	struct QualifiedName
 	{
 		std::vector<std::string> parts;
@@ -121,7 +121,7 @@ namespace Lauter
 			return parts.back();
 		}
 
-		//Соединяет части полного имени через '::'
+		//РЎРѕРµРґРёРЅСЏРµС‚ С‡Р°СЃС‚Рё РїРѕР»РЅРѕРіРѕ РёРјРµРЅРё С‡РµСЂРµР· '::'
 		std::string toString() const
 		{
 			if (parts.empty())
@@ -151,7 +151,7 @@ namespace Lauter
 
 	struct TypeRef;
 	
-	//Шаблонный тип или литерал
+	//РЁР°Р±Р»РѕРЅРЅС‹Р№ С‚РёРї РёР»Рё Р»РёС‚РµСЂР°Р»
 	struct GenericArgument
 	{
 		SourceLocation location;
@@ -164,16 +164,16 @@ namespace Lauter
 	};
 
 
-	//Тип + модификаторы
+	//РўРёРї + РјРѕРґРёС„РёРєР°С‚РѕСЂС‹
 	struct QualifiedType
 	{
-		//Тип, представленный в таблице символов
+		//РўРёРї, РїСЂРµРґСЃС‚Р°РІР»РµРЅРЅС‹Р№ РІ С‚Р°Р±Р»РёС†Рµ СЃРёРјРІРѕР»РѕРІ
 		const SemanticType* type = nullptr;
 
-		//Является ли константой
+		//РЇРІР»СЏРµС‚СЃСЏ Р»Рё РєРѕРЅСЃС‚Р°РЅС‚РѕР№
 		bool isConst = false;
 
-		//Является ли ссылкой
+		//РЇРІР»СЏРµС‚СЃСЏ Р»Рё СЃСЃС‹Р»РєРѕР№
 		bool isReference = false;
 
 		std::vector<QualifiedType> generics;
@@ -192,10 +192,10 @@ namespace Lauter
 		SourceLocation location;
 		QualifiedName typeName;
 
-		//Является ли константой
+		//РЇРІР»СЏРµС‚СЃСЏ Р»Рё РєРѕРЅСЃС‚Р°РЅС‚РѕР№
 		bool isConst = false;
 
-		//Является ли ссылкой
+		//РЇРІР»СЏРµС‚СЃСЏ Р»Рё СЃСЃС‹Р»РєРѕР№
 		bool isReference = false;
 
 		std::vector<GenericArgument> generics;
@@ -206,27 +206,27 @@ namespace Lauter
 	{
 		Primitive, //int, real, bool
 		GenericParameter,
-		Class, //пользовательские типы
-		Function, //для ссылок на функции
-		Interface, //для ссылки на сущность произвольного класса, реализующего данный интерфейс
-		Enum, //для перечислений (на будущее)
-		Alias, //псевдоним
+		Class, //РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ С‚РёРїС‹
+		Function, //РґР»СЏ СЃСЃС‹Р»РѕРє РЅР° С„СѓРЅРєС†РёРё
+		Interface, //РґР»СЏ СЃСЃС‹Р»РєРё РЅР° СЃСѓС‰РЅРѕСЃС‚СЊ РїСЂРѕРёР·РІРѕР»СЊРЅРѕРіРѕ РєР»Р°СЃСЃР°, СЂРµР°Р»РёР·СѓСЋС‰РµРіРѕ РґР°РЅРЅС‹Р№ РёРЅС‚РµСЂС„РµР№СЃ
+		Enum, //РґР»СЏ РїРµСЂРµС‡РёСЃР»РµРЅРёР№ (РЅР° Р±СѓРґСѓС‰РµРµ)
+		Alias, //РїСЃРµРІРґРѕРЅРёРј
 		Unknown
 	};
 
 	enum class SymbolKind
 	{
-		Type,              // имя типа в области видимости (примитив, пользовательский тип, интерфейс)
-		FunctionOverloads,          // объявленная функция с перегрузками
-		Variable,          // переменная
-		Parameter,         // параметр функции
-		Namespace,         // пространство имён
-		GenericParameter   // T в class Box(T)
+		Type,              // РёРјСЏ С‚РёРїР° РІ РѕР±Р»Р°СЃС‚Рё РІРёРґРёРјРѕСЃС‚Рё (РїСЂРёРјРёС‚РёРІ, РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ С‚РёРї, РёРЅС‚РµСЂС„РµР№СЃ)
+		FunctionOverloads,          // РѕР±СЉСЏРІР»РµРЅРЅР°СЏ С„СѓРЅРєС†РёСЏ СЃ РїРµСЂРµРіСЂСѓР·РєР°РјРё
+		Variable,          // РїРµСЂРµРјРµРЅРЅР°СЏ
+		Parameter,         // РїР°СЂР°РјРµС‚СЂ С„СѓРЅРєС†РёРё
+		Namespace,         // РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјС‘РЅ
+		GenericParameter   // T РІ class Box(T)
 	};
 
 
 
-	//Сигнатура функции/метода (семантический анализ)
+	//РЎРёРіРЅР°С‚СѓСЂР° С„СѓРЅРєС†РёРё/РјРµС‚РѕРґР° (СЃРµРјР°РЅС‚РёС‡РµСЃРєРёР№ Р°РЅР°Р»РёР·)
 	struct FunctionSignature
 	{
 		std::vector<QualifiedType> parameters;
@@ -236,7 +236,7 @@ namespace Lauter
 
 	struct FunctionType;
 
-	//Тип для таблицы символов
+	//РўРёРї РґР»СЏ С‚Р°Р±Р»РёС†С‹ СЃРёРјРІРѕР»РѕРІ
 	struct SemanticType
 	{
 		QualifiedName fullname;
@@ -249,7 +249,7 @@ namespace Lauter
 		virtual ~SemanticType() = default;
 	};
 
-	//Псевдоним
+	//РџСЃРµРІРґРѕРЅРёРј
 	struct AliasType : SemanticType
 	{
 		SemanticType* target;
@@ -268,14 +268,14 @@ namespace Lauter
 		}
 	};
 
-	//Раскрытие псевдонима
+	//Р Р°СЃРєСЂС‹С‚РёРµ РїСЃРµРІРґРѕРЅРёРјР°
 	inline const SemanticType* resolveAlias(const SemanticType* type)
 	{
 		std::unordered_set<const SemanticType*> visited;
 		while (type && type->kind == TypeKind::Alias)
 		{
 			if (!visited.insert(type).second)
-				return nullptr; //Цикл псевдонимов
+				return nullptr; //Р¦РёРєР» РїСЃРµРІРґРѕРЅРёРјРѕРІ
 
 			type = static_cast<const AliasType*>(type)->target;
 		}
@@ -283,7 +283,7 @@ namespace Lauter
 	}
 
 
-	//Тип для таблицы символов, который хранится в памяти
+	//РўРёРї РґР»СЏ С‚Р°Р±Р»РёС†С‹ СЃРёРјРІРѕР»РѕРІ, РєРѕС‚РѕСЂС‹Р№ С…СЂР°РЅРёС‚СЃСЏ РІ РїР°РјСЏС‚Рё
 	struct DataType : SemanticType
 	{
 		size_t size = 0;
@@ -313,7 +313,7 @@ namespace Lauter
 		}
 	};
 
-	//Семантический тип для отличия условного List(T) от List(E)
+	//РЎРµРјР°РЅС‚РёС‡РµСЃРєРёР№ С‚РёРї РґР»СЏ РѕС‚Р»РёС‡РёСЏ СѓСЃР»РѕРІРЅРѕРіРѕ List(T) РѕС‚ List(E)
 	struct GenericInstanceType : SemanticType
 	{
 		SemanticType* base;
@@ -326,7 +326,7 @@ namespace Lauter
 		FunctionType* type;
 	};
 
-	//Тип для создания ссылки на объект, реализующий данный интерфейс
+	//РўРёРї РґР»СЏ СЃРѕР·РґР°РЅРёСЏ СЃСЃС‹Р»РєРё РЅР° РѕР±СЉРµРєС‚, СЂРµР°Р»РёР·СѓСЋС‰РёР№ РґР°РЅРЅС‹Р№ РёРЅС‚РµСЂС„РµР№СЃ
 	struct InterfaceType : SemanticType
 	{
 		InterfaceType(QualifiedName name)
@@ -335,7 +335,7 @@ namespace Lauter
 		std::vector<InterfaceMethod> methods;
 	};
 
-	//Тип для создания ссылки на функцию
+	//РўРёРї РґР»СЏ СЃРѕР·РґР°РЅРёСЏ СЃСЃС‹Р»РєРё РЅР° С„СѓРЅРєС†РёСЋ
 	struct FunctionType : SemanticType
 	{
 		FunctionSignature signature;
@@ -345,7 +345,7 @@ namespace Lauter
 		{}
 	};
 
-	//Поле класса
+	//РџРѕР»Рµ РєР»Р°СЃСЃР°
 	struct Field
 	{
 		std::string name;
@@ -355,7 +355,7 @@ namespace Lauter
 
 		size_t offset = 0;
 
-		bool isStatic = false; //Модификатор для объявления полей, не привязанных к конкретному объекту
+		bool isStatic = false; //РњРѕРґРёС„РёРєР°С‚РѕСЂ РґР»СЏ РѕР±СЉСЏРІР»РµРЅРёСЏ РїРѕР»РµР№, РЅРµ РїСЂРёРІСЏР·Р°РЅРЅС‹С… Рє РєРѕРЅРєСЂРµС‚РЅРѕРјСѓ РѕР±СЉРµРєС‚Сѓ
 	};
 
 
@@ -366,7 +366,7 @@ namespace Lauter
 		FunctionType* type;
 		AccessModifier access = DefaultAccessModifier;
 
-		bool isStatic = false; //Модификатор для объявления методов, не привязанных к конкретному объекту
+		bool isStatic = false; //РњРѕРґРёС„РёРєР°С‚РѕСЂ РґР»СЏ РѕР±СЉСЏРІР»РµРЅРёСЏ РјРµС‚РѕРґРѕРІ, РЅРµ РїСЂРёРІСЏР·Р°РЅРЅС‹С… Рє РєРѕРЅРєСЂРµС‚РЅРѕРјСѓ РѕР±СЉРµРєС‚Сѓ
 	};
 
 
